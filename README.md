@@ -1,4 +1,4 @@
-# Python 
+# Python
 Pytyonのお勉強。
 
 ## 資料
@@ -11,5 +11,5 @@ $ python -V
 Python 3.6.1
 
 $ pip -V
-pip 9.0.1 from /Users/eri/.pyenv/versions/3.6.1/lib/python3.6/site-packages (python 3.6)
+pip 9.0.1 from /Users/name/.pyenv/versions/3.6.1/lib/python3.6/site-packages (python 3.6)
 ```
