@@ -19,7 +19,10 @@ def getAnswer(answerNumber):
     elif answerNumber == 9:
         return '9 desu'
 
+# ランダムの数字を得て、対応するメッセージを表示する
 r = random.randint(1, 9)
 fortune = getAnswer(r)
 print(fortune)
 
+# 1行で書くならこんなかんじ
+print(getAnswer(random.randint(1, 9)))
