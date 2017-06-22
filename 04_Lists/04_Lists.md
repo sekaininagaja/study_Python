@@ -6,9 +6,6 @@ https://automatetheboringstuff.com/chapter4/
 リストとタプルには複数の値を入れることができるので、大量のデータを扱うプログラムの作成が容易になります。  
 リスト自体に他のリストを含めることができるので、データを階層構造に配置することができます。  
 
-また、メソッドについても学びます。  
-メソッドとは、あるデータ型の値に関連付けられた関数のことです。  
-
 
 ## リストデータ型
 下記のようなデータを「リスト」と呼びます。`['cat', 'bat', 'rat', 'elephant']` このひとかたまりが、リストです。    
@@ -409,4 +406,162 @@ spam %= 1  # spam = spam % 1
 >>> bacon
 ['Zophie', 'Zophie', 'Zophie']
 >>>
+```
+
+# メソッド
+
+メソッドとは、関数みたいなものです。値とメソッドを `.` でつないで使います。
+たとえば下記のようなメソッドがあります。
+
+### index() メソッド
+- リスト内に値が存在していたら、その値のインデックス値を取得する
+- 値が存在していなかったらエラーになる
+- 値が重複していたら、最初の値のインデックスを返す
+
+```python
+>>> spam = ['hello', 'hi', 'howdy', 'heyas']
+>>> spam.index('hello')
+0
+>>> spam.index('heyas')
+3
+
+# 値が存在していなかったらエラーになる
+>>> spam.index('howdyhowdyhowdy')
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+ValueError: 'howdyhowdyhowdy' is not in list
+>>>
+
+# 値が重複していたら、最初の値のインデックスを返す
+>>> spam = ['namake', 'tamao', 'masubuchi', 'tamao']
+>>> spam.index('tamao')
+1
+```
+
+### append() メソッド
+リストの最後に値を追加します。
+
+```python
+>>> spam = ['cat', 'dog', 'bad']
+>>> spam.append('moose')
+>>> spam
+['cat', 'dog', 'bad', 'moose']
+>>>
+```
+
+### insert() メソッド
+insert() メソッドは、リスト内の任意の位置に値を追加します。  
+最初の引数でインデックスを指定し、2番めの引数でそこに入れる値を指定します。  
+こんなかんじになります。
+
+```python
+>>> spam = ['cat', 'dog', 'bat']
+>>> spam.insert(1, 'chiken')
+>>> spam
+['cat', 'chiken', 'dog', 'bat']
+```
+
+### [Note] append() と insert() メソッド について
+
+append() と insert() メソッドは、list()メソッドもしくはただのリストから使います。  
+文字列や整数値が入るふつうの変数では使えません。
+
+**下記は同じ意味にはならないので注意してください。**
+- `spam.append('moose')` は `spam = spam.append('moose')` と同じではない
+- `spam.insert(1, 'chiken')` は `spam = spam.insert(1, 'chiken')` と同じではない
+
+```python
+# ふつうの変数に対して append() と insert() を使うとエラーになる
+>>> eggs = 'hello'
+>>> eggs.append('world')
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+AttributeError: 'str' object has no attribute 'append'
+
+>>> bacon = 42
+>>> bacon.insert(1, 'world')
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+AttributeError: 'int' object has no attribute 'insert'
+>>>
+```
+
+## remove() メソッド
+remove() は、リスト内の値を削除します。  
+存在しない値を消そうとすると、エラーになります。  
+値が重複している場合は、最初のインデックスの値だけが削除されます。
+
+```python
+>>> spam = ['cat', 'bat', 'rat', 'elephant']
+>>> spam.remove('bat')
+>>> spam
+['cat', 'rat', 'elephant']
+
+# 存在しない 'chicken' を消そうとしているため、エラーになる
+>>> spam = ['cat', 'bat', 'rat', 'elephant']
+>>> spam.remove('chicken')
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+ValueError: list.remove(x): x not in list
+
+# 'cat' が重複している。最初の 'cat' だけが削除される
+>>> spam = ['cat', 'bat', 'rat', 'cat', 'hat', 'cat']
+>>> spam.remove('cat')
+>>> spam
+['bat', 'rat', 'cat', 'hat', 'cat']
+```
+
+### del VS remove() メソッド
+`del` は、**削除するインデックスの値** がわかっている場合に使うと良いです。  
+`remove() メソッド` は **削除する値** がわかっている場合に使うと良いです。
+
+
+## sort() メソッド
+数値や文字列のリストは `sort()` メソッドでソートすることができます。  
+`reverse` 変数に `True` を与えると、降順にソートすることができます。  
+
+```python
+>>> spam = [2, 5, 3.14, 1, -7]
+>>> spam.sort()
+>>> spam
+[-7, 1, 2, 3.14, 5]
+
+>>> spam = ['ants', 'cats', 'dogs', 'badgers', 'elephants']
+>>> spam.sort()
+>>> spam
+['ants', 'badgers', 'cats', 'dogs', 'elephants']
+
+# 降順にソート
+>>> spam.sort(reverse=True)
+>>> spam
+['elephants', 'dogs', 'cats', 'badgers', 'ants']
+```
+
+`sort()` メソッドを使う時の3つの注意点があります。  
+1. `sort()`メソッドはリストのみで使える。
+1. 数値と文字列が混ざったリストでは使えない。
+1. ソートメソッドはデフォルトで「ASCIIbetical order」を使用する。  
+   そのため、大文字の方が小文字よりも先にソートされる(`a` は `Z` の次)。  
+   「regular alphabetical order」を使用したい場合は、`key` 変数に `str. lower` を設定する。  
+   `str. lower` を使用すると、実際の値ではなく、すべて小文字としてソートする。
+
+```python
+# 数値と文字列が混在するリストをソートしようとすると、エラーになる
+>>> spam = [1, 3, 2, 4, 'Alice', 'Bob']
+>>> spam.sort()
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: '<' not supported between instances of 'str' and 'int'
+
+
+# 大文字が先にソートされる
+>>> spam = ['Alice', 'ants', 'Bob', 'badgers', 'Carol', 'cats']
+>>> spam.sort()
+>>> spam
+['Alice', 'Bob', 'Carol', 'ants', 'badgers', 'cats']
+
+# すべて小文字としてソートする(Alice -> alice、 Bob ー> bob、 Carol -> carol)
+>>> spam.sort(key=str.lower)
+>>> spam
+['Alice', 'ants', 'badgers', 'Bob', 'Carol', 'cats']
 ```
