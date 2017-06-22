@@ -250,7 +250,7 @@ while True:
 
 ## for文でリストを使う
 
-以前、こんなかんじでfor文を使いました。
+以前、こんなかんじでfor文を書きました。
 ```python
 for i in range(4): # i が4になるまで(0～3の間)繰り返し
     print(i)
@@ -272,4 +272,141 @@ for i in [0, 1, 2, 10]:
 1
 2
 10
+```
+
+さらに、for文の条件に `range(len(supplies))` を使うと、リストのアイテム数をそのまま設定できます。  
+もしリストのアイテム数が変更されても、スクリプトを修正しなくて済みます。
+
+```python
+supplies = ['pens', 'staplers', 'flame-throwers', 'binders']
+for i in range(len(supplies)):
+    print('index ' + str(i) + ' in supplies is: ' + supplies[i])
+
+# 結果
+index 0 in supplies is: pens
+index 1 in supplies is: staplers
+index 2 in supplies is: flame-throwers
+index 3 in supplies is: binders
+```
+
+## `in` と `not in` 演算子
+
+`in` と `not in` 演算子を使用して、リスト内に値があるかどうかを判断できます。  
+`in` と `not in` はブール値で評価されます。
+
+```python
+>>> 'howdy' in ['hello', 'hi', 'howdy', 'heyas']
+True
+
+>>> spam = ['hello', 'hi', 'howdy', 'heyas']
+>>> 'cat' in spam
+False
+>>> 'howdy' not in spam
+False
+>>> 'cat' not in spam
+True
+```
+
+たとえば、以下のようなプログラムで使用します。  
+- ペットの名前を入力させる
+- ペットのリスト内に、入力した名前があった場合は「わたしのペットです」と表示
+- ペットのリスト内に、入力した名前がなかった場合は「わたしのペットじゃありません」と表示
+
+```python
+# myPets.py 抜粋
+if name not in myPets:
+  print('I do not have a pet named ' + name)
+else:
+  print(name + 'is my pet.')
+```
+
+
+## 多重代入
+**多重代入** を使うと、下記のような内容を簡単に書けます。  
+値の数と、リストの長さは同じである必要があります。同じじゃない場合はエラーになります。
+
+```python
+# 多重代入を使わない書き方
+>> cat = ['fat', 'orange', 'loud']
+>>> size = cat[0]
+>>> color = cat[1]
+>>> disposition = cat[2]
+
+# 多重代入を使った書き方
+>>> cat = ['fat', 'orange', 'loud']
+>>> size, color, disposition = cat
+
+# どちらも結果は同じ
+>>> size
+'fat'
+>>> color
+'orange'
+>>> disposition
+'loud'
+>>>
+```
+
+2つの値を入れ替えるときにも、多重代入が使われます。
+```python
+>>> a,b = 'Alice','Bob'
+>>> a,b = b,a
+>>> print(a)
+Bob
+>>> print(b)
+Alice
+```
+
+## 累算代入演算子
+
+累算代入演算子というとスゲー難しい感じがする・・・。  
+要は「変数spamには、元々42という値が入っていました。これにプラス1して、43にしたい。」というやつです。  
+
+```python
+# 累算代入演算を使わないで +1 する書き方
+>>> spam = 42
+>>> spam = spam + 1
+>>> spam
+43
+
+# 累算代入演算を使って +1 する書き方
+>>> spam = 42
+>>> spam += 1
+>>> spam
+43
+>>>
+```
+
+累算代入演算は、`+`, `-`, `*`, `/`, `%` でおこなうことができます。  
+それぞれどんな意味になるかを、下記に記載します。
+```python
+spam += 1  # spam = spam + 1
+spam -= 1  # spam = spam - 1
+spam *= 1  # spam = spam * 1
+spam /= 1  # spam = spam / 1
+spam %= 1  # spam = spam % 1
+```
+
+ちなみに `+=` は文字列とリストの連結にも使えます。  
+それから `*=` は文字列とリストの複製にも使えます。
+```python
+>>> spam = 'Hello'
+>>> spam += ' world!'
+>>> spam
+'Hello world!'
+
+>>> spam = ['hoge']
+>>> spam += ['fuga']
+>>> spam
+['hoge', 'fuga']
+
+>>> bacon = 'Hello'
+>>> bacon *= 3
+>>> bacon
+'HelloHelloHello'
+
+>>> bacon = ['Zophie']
+>>> bacon *= 3
+>>> bacon
+['Zophie', 'Zophie', 'Zophie']
+>>>
 ```
