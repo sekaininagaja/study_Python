@@ -410,7 +410,7 @@ spam %= 1  # spam = spam % 1
 
 # メソッド
 
-メソッドとは、関数みたいなものです。値とメソッドを `.` でつないで使います。
+メソッドとは、関数みたいなものです。値とメソッドを `.` でつないで使います。  
 たとえば下記のようなメソッドがあります。
 
 ### index() メソッド
@@ -542,13 +542,9 @@ ValueError: list.remove(x): x not in list
 1. 数値と文字列が混ざったリストでは使えない。
 1. ソートメソッドはデフォルトで「ASCIIbetical order」を使用する。  
    そのため、大文字の方が小文字よりも先にソートされる(`a` は `Z` の次)。  
-<<<<<<< HEAD
+
    「regular alphabetical order」を使用したい場合は、`key` 変数に `str.lower` を設定する。  
    `str.lower` を使用すると、実際の値ではなく、すべて小文字としてソートする。
-=======
-   「regular alphabetical order」を使用したい場合は、`key` 変数に `str. lower` を設定する。  
-   `str. lower` を使用すると、実際の値ではなく、すべて小文字としてソートする。
->>>>>>> 4a01cb45d8b0f2dea105b8e558ab2231c7ca7fce
 
 ```python
 # 数値と文字列が混在するリストをソートしようとすると、エラーになる
@@ -570,7 +566,6 @@ TypeError: '<' not supported between instances of 'str' and 'int'
 >>> spam
 ['Alice', 'ants', 'badgers', 'Bob', 'Carol', 'cats']
 ```
-<<<<<<< HEAD
 
 # コードを読みやすくするためのTips
 
