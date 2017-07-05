@@ -64,3 +64,20 @@ KeyError: 'color'
 
 辞書は順序付けされていませんが、キーに任意の値を設定できるため、データを強力な方法で整理できます。  
 友人の誕生日データを保存するプログラムを作成したいとき、キーを「名前」、値を「誕生日」とする辞書を使用するといいかんじです。  
+
+```python
+# birthdays.py 実行結果
+Enter a name: (blank to quit)
+Alice
+Apr 1 is the birthday of Alice
+Enter a name: (blank to quit)
+Masubuchi
+I do not have birthday information for Masubuchi
+What is their birthday?
+July 3
+Birthday database updated.
+Enter a name: (blank to quit)
+Masubuchi
+July 3 is the birthday of Masubuchi
+Enter a name: (blank to quit)
+```
