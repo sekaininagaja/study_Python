@@ -127,3 +127,14 @@ dict_keys(['color', 'age'])
 >>> list(spam.keys())
 ['color', 'age']
 ```
+
+forループ内で複数の割り当てトリックを使用して、別々の変数にキーと値を割り当てることができます。  
+
+```python
+>>> spam = {'color': 'red', 'age': 42}
+>>> for k, v in spam.items(): \
+... print('Key: ' + k + ' Value: ' + str(v))
+...
+Key: color Value: red
+Key: age Value: 42
+```
