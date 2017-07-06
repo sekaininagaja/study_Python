@@ -81,3 +81,49 @@ Masubuchi
 July 3 is the birthday of Masubuchi
 Enter a name: (blank to quit)
 ```
+
+## keys(), values(), items() メソッド
+
+下記の通り、3つの辞書型をあつかうためのメソッドがあります。  
+- keys() … 辞書のキーを返す
+- values() … 辞書の値を返す
+- items() … キーと値を返す
+リストに似ていますが、これらのメソッドで返される値は真ではありません。変更もできないし、append()メソッドもありません。  
+
+しかし、これらのデータ型(dict_keys, dict_values, dict_items)はfor文の中で使えます。  
+これらのメソッドを使用して、for文内でそれぞれ辞書内のキー、値、またはキーと値のペアを反復処理できます。  
+items()メソッドによって返されるdict_itemsの値は、キーと値のタプルであることに注意してください。  
+
+```python
+>>> spam = {'color': 'red', 'age': '42'}
+
+# spam辞書の値を表示
+>>> for v in spam.values(): \
+... print(v)
+red
+42
+
+# spam辞書のキーを表示
+>>> for k in spam.keys(): \
+... print(k)
+...
+color
+age
+
+# spam辞書のキーと値の両方を表示 (キーと値のタプルが返る)
+>>> for i in spam.items(): \
+... print(i)
+...
+('color', 'red')
+('age', '42')
+```
+
+これらのメソッドの真のリストが必要な場合は、戻り値をlist()関数に渡します。  
+
+```python
+>>> spam = {'color': 'red', 'age': 42}
+>>> spam.keys()
+dict_keys(['color', 'age'])
+>>> list(spam.keys())
+['color', 'age']
+```
