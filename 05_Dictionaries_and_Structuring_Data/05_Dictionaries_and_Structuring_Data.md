@@ -227,3 +227,48 @@ setdefault() メソッドを使用すると、辞書内に値が存在するこ�
 >>> spam
 {'name': 'Pooka', 'age': 5, 'color': 'black'}
 ```
+
+## Pretty Printing (pprin() と pformat())
+
+pprintモジュールをプログラムにインポートすると、pprin() と pformat() 関数にアクセスして、辞書の値を「きれいに」表示します。  
+print() が提供するものよりも、辞書内の項目をいいかんじに表示できます。  
+pprint.pprint() 関数は、辞書にネストされたリストや辞書が含まれている場合に特に役立ちます。  
+
+```python
+# characterCount.py 結果
+{'I': 1, 't': 6, ' ': 13, 'w': 2, 'a': 4, 's': 3, 'b': 1, 'r': 5, 'i': 6, 'g': 2, 'h': 3, 'c': 3, 'o': 2, 'l': 3, 'd': 3, 'y': 1, 'n': 4, 'A': 1, 'p': 1, ',': 1, 'e': 5, 'k': 2, '.': 1}
+
+# prettyCharacterCount.py 結果
+
+{' ': 13,
+ ',': 1,
+ '.': 1,
+ 'A': 1,
+ 'I': 1,
+ 'a': 4,
+ 'b': 1,
+ 'c': 3,
+ 'd': 3,
+ 'e': 5,
+ 'g': 2,
+ 'h': 3,
+ 'i': 6,
+ 'k': 2,
+ 'l': 3,
+ 'n': 4,
+ 'o': 2,
+ 'p': 1,
+ 'r': 5,
+ 's': 3,
+ 't': 6,
+ 'w': 2,
+ 'y': 1}
+```
+
+装飾テキストを画面に表示する代わりに文字列値として取得する場合は、代わりにpprint.pformat()を呼び出します。
+
+```python
+# 以下の2つはどちらも同じ意味
+pprint.pprint(someDictionaryValue)
+print(pprint.pformat(someDictionaryValue))
+```
