@@ -280,3 +280,37 @@ print(pprint.pformat(someDictionaryValue))
 
 たとえば、ピクニックに誰が何を持って来るのかを確認するために、他の辞書を含む辞書を使用するプログラムがあります。  
 totalBrought()関数は、このデータ構造を読み込み、すべてのゲストが持っているアイテムの総数を計算します。  
+
+```python
+allGuests = {'Allice': {'apples': 5, 'pretzels': 12},
+             'Bob': {'ham sandwiches': 3, 'apples': 2},
+             'Carol': {'cups': 3, 'apple pies': 1}}
+
+# totalBrought()関数の中で、ゲストごとのキーと値を繰り返し処理する。
+# k... ゲスト名
+# v... ピクニックアイテムの辞書
+def totalBrought(guests, item):
+    newBrought = 0
+    for k, v in guests.items():
+        # アイテムがキーとして存在する場合、その数値が newBrought に追加される
+        # 存在しない場合、get()メソッドは 0 を返す
+        newBrought = newBrought + v.get(item, 0)
+    return newBrought
+
+print('Number og things being broughe:')
+print(' - Apples          ' + str(totalBrought(allGuests, 'apple')))
+print(' - Cups            ' + str(totalBrought(allGuests, 'cups')))
+print(' - Cakes           ' + str(totalBrought(allGuests, 'cakes')))
+print(' - Ham Sandwiches  ' + str(totalBrought(allGuests, 'ham sandwiches')))
+print(' - Apple Pies      ' + str(totalBrought(allGuests, 'apple pies')))
+```
+
+```python
+# 結果
+Number og things being broughe:
+ - Apples          7
+ - Cups            3
+ - Cakes           0
+ - Ham Sandwiches  3
+ - Apple Pies      1
+```
