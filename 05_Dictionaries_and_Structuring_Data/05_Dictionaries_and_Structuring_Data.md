@@ -357,7 +357,7 @@ spam.keys() は、spam という辞書内の「キー」すべてをあらわす
 
 Q:6. If a dictionary is stored in spam, what is the difference between the expressions 'cat' in spam and 'cat' in spam.values()?
 spam['cat'] は、catという「キー」に対応する「値」をあらわす。  
-spam.keys() は、spam という辞書内の「値」すべてをあらわす。
+spam.values() は、spam という辞書内の「値」すべてをあらわす。
 
 Q:7. What is a shortcut for the following code?
 
@@ -377,7 +377,7 @@ pprintモジュールと、pprint(), pformat()関数
 
 あなたはファンタジービデオゲームを作成しています。   
 プレーヤーの在庫をモデル化するためのデータ構造は、キーがインベントリ内のアイテムを説明する文字列値であり、値がそのアイテムがプレーヤーの持つアイテムの数を示す整数値である辞書である。   
-たとえば、「rope」：1、「torch」：6、「gold coin」：42、「dagger」：1、「arrow」：12}は、ロープ1本、トーチ6本、金42 コインなど。  
+たとえば、「rope」：1、「torch」：6、「gold coin」：42、「dagger」：1、「arrow」：12 は、ロープ1本、トーチ6本、金42 コインなど。  
 
 displayInventory() という名前の関数を作成し、可能な「インベントリ」を取り出し、次のように表示します。   
 ```python
