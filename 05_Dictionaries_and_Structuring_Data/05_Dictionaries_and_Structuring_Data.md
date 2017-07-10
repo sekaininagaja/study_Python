@@ -371,3 +371,21 @@ if 'color' not in spam:
 
 Q:8. What module and function can be used to “pretty print” dictionary values?  
 pprintモジュールと、pprint(), pformat()関数  
+
+
+# 練習プロジェクト
+
+あなたはファンタジービデオゲームを作成しています。   
+プレーヤーの在庫をモデル化するためのデータ構造は、キーがインベントリ内のアイテムを説明する文字列値であり、値がそのアイテムがプレーヤーの持つアイテムの数を示す整数値である辞書である。   
+たとえば、「rope」：1、「torch」：6、「gold coin」：42、「dagger」：1、「arrow」：12}は、ロープ1本、トーチ6本、金42 コインなど。  
+
+displayInventory() という名前の関数を作成し、可能な「インベントリ」を取り出し、次のように表示します。   
+```python
+Inventory:
+12 arrow
+42 gold coin
+1 rope
+6 torch
+1 dagger
+Total number of items: 62
+```
