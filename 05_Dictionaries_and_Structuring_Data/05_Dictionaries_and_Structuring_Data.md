@@ -375,8 +375,10 @@ pprintモジュールと、pprint(), pformat()関数
 
 # 練習プロジェクト
 
+### ファンタジーゲームインベントリ
+
 あなたはファンタジービデオゲームを作成しています。   
-プレーヤーの在庫をモデル化するためのデータ構造は、キーがインベントリ内のアイテムを説明する文字列値であり、値がそのアイテムがプレーヤーの持つアイテムの数を示す整数値である辞書である。   
+プレーヤーの所持品をモデル化するためのデータ構造は、キーがインベントリ内のアイテムを説明する文字列値であり、値がそのアイテムがプレーヤーの持つアイテムの数を示す整数値である辞書である。   
 たとえば、「rope」：1、「torch」：6、「gold coin」：42、「dagger」：1、「arrow」：12 は、ロープ1本、トーチ6本、金42 コインなど。  
 
 displayInventory() という名前の関数を作成し、可能な「インベントリ」を取り出し、次のように表示します。   
@@ -388,4 +390,328 @@ Inventory:
 6 torch
 1 dagger
 Total number of items: 62
+```
+
+### 解答
+inventory.py
+
+### ファンタジーゲームインベントリの辞書機能へのリスト
+
+ドラゴンを倒すと戦利品がもらえます。  
+戦利品は、下記のように文字列のリストとして表されます。  
+`dragon_loot = ['gold coin', 'dagger', 'gold coin', 'gold coin', 'ruby']`
+
+これを、プレーヤーの所持品リストに加えるスクリプトを作成します。  
+プログラムの結果は下記のようになるはずです。  
+
+```python
+Inventory:
+45 gold coin
+1 rope
+1 ruby
+1 dagger
+
+Total number of items: 48
+```
+
+### 解答
+dragonInventory.py
+
+```python
+dragon_loot = ['gold coin', 'dagger', 'gold coin', 'gold coin', 'ruby']
+inv = {'gold coin': 42, 'rope': 1}
+
+# 各パラメータに入るもの
+# inventory <-- inv辞書
+# added_items <-- dragon_lootリスト
+def add_to_inventory(inventory, added_items):
+
+    # added_items(dragon_lootリスト)のアイテム数とおなじ回数(len(added_items))だけ精査する。
+    for i in range(len(added_items)):
+        item_name = added_items[i]   # 精査するアイテム名
+        item_total = 0               # 精査するアイテムの所持数の一時的に記憶するところ(初期化)
+
+        # アイテムがinventory(inv辞書)内に存在する場合
+        if item_name in inventory:
+            item_total = int(inventory[item_name]) + 1  # 所持数+1する。辞書内の値はint型にしてから計算する。
+            inventory[item_name] = item_total           # 辞書内の値を、item_totalの値に更新。(inventory[item_name] = int(inventory[item_name]) + 1 でも良さそう)
+
+        # アイテムがinventory(inv辞書)内に存在しない場合
+        else:
+            inventory[item_name] = 1 # アイテムを辞書に追加する(値1)
+            #inventory.setdefault(item_name, 1)  <-- setdefaultで登録しようとしてたときの名残
+    i = i+1
+    return inventory  # ★内容が更新された辞書を返す
+
+def display_inventory(inventory):
+    print("Inventry:")
+    item_total = 0
+    for k, v in inventory.items():
+        print(str(inventory[k]) + '  ' + k )
+        item_total = item_total + v
+    print("Total number if items: " + str(item_total) )
+
+# for debug
+# コメントを外して使う。デバッグしたい関数が出現する前あたりにおいてやるとよさげ。
+#import pdb;pdb.set_trace()
+
+inv = add_to_inventory(inv, dragon_loot)
+display_inventory(inv)
+```
+
+#### はまったところ
+- 全然理解してないのに getメソッドや、setdefaultメソッドを使ってやってみようと色気をだしてしまった。愚直にif文、代入方式に変えた。
+- 関数のパラメータの意味をいまいちよくわかっていない
+- add_to_inventory関数の最後で return しなかったせいで、inv変数に更新した辞書を設定できなかった。  
+  `inv = add_to_inventory(inv, dragon_loot)` <-- ここ  
+- そのせいで、`display_inventory(inv)` がずっとエラーになるしまつ。  
+  `AttributeError: 'NoneType' object has no attribute 'items'` `AttributeError: 'int' object has no attribute 'items'` など。(invに変な値がはいっている)
+- Pythonデバッグの方法  
+  参考: 【Python】いつまでprintデバッグで消耗してるの？
+  http://racchai.hatenablog.com/entry/2016/05/30/070000  
+  すばらしい記事。
+
+#### デバッグしながら実行する様子
+詳しくは上記の参考サイトを見る。  
+
+- l(ist)	現在行の前後のソースコードを表示
+- a(rgs)	現在いる関数の引数を表示
+- p	プリント
+- c(ont(inue))	次のブレイクポイントまで実行
+
+```python
+# python dragonInventory.py
+> /root/work/study_Python/05_Dictionaries_and_Structuring_Data/dragonInventory.py(29)<module>()
+-> inv = add_to_inventory(inv, dragon_loot)
+(Pdb) l
+ 24         print("Total number if items: " + str(item_total) )
+ 25
+ 26     # for debug
+ 27     import pdb;pdb.set_trace()
+ 28
+ 29  -> inv = add_to_inventory(inv, dragon_loot)
+ 30     display_inventory(inv)
+[EOF]
+(Pdb) s
+--Call--
+> /root/work/study_Python/05_Dictionaries_and_Structuring_Data/dragonInventory.py(5)add_to_inventory()
+-> def add_to_inventory(inventory, added_items):
+(Pdb) l
+  1     dragon_loot = ['gold coin', 'dagger', 'gold coin', 'gold coin', 'ruby']
+  2     inv = {'gold coin': 42, 'rope': 1}
+  3
+  4     # dragon_loot のアイテムがinv内に存在するか確認し、存在していたら+1する
+  5  -> def add_to_inventory(inventory, added_items):
+  6         for i in range(len(added_items)):
+  7             item_name = added_items[i]
+  8             item_total = 0
+  9             if item_name in inventory:
+ 10                 item_total = int(inventory[item_name]) + 1
+ 11                 inventory[item_name] = item_total
+(Pdb) a
+inventory = {'gold coin': 42, 'rope': 1}
+added_items = ['gold coin', 'dagger', 'gold coin', 'gold coin', 'ruby']
+(Pdb) s
+> /root/work/study_Python/05_Dictionaries_and_Structuring_Data/dragonInventory.py(6)add_to_inventory()
+-> for i in range(len(added_items)):
+(Pdb) p type(inventory)
+<class 'dict'>
+(Pdb) p type(added_items)
+<class 'list'>
+(Pdb) s
+> /root/work/study_Python/05_Dictionaries_and_Structuring_Data/dragonInventory.py(7)add_to_inventory()
+-> item_name = added_items[i]
+(Pdb) l
+  2     inv = {'gold coin': 42, 'rope': 1}
+  3
+  4     # dragon_loot のアイテムがinv内に存在するか確認し、存在していたら+1する
+  5     def add_to_inventory(inventory, added_items):
+  6         for i in range(len(added_items)):
+  7  ->         item_name = added_items[i]
+  8             item_total = 0
+  9             if item_name in inventory:
+ 10                 item_total = int(inventory[item_name]) + 1
+ 11                 inventory[item_name] = item_total
+ 12             else:
+(Pdb) s
+> /root/work/study_Python/05_Dictionaries_and_Structuring_Data/dragonInventory.py(8)add_to_inventory()
+-> item_total = 0
+(Pdb) s
+> /root/work/study_Python/05_Dictionaries_and_Structuring_Data/dragonInventory.py(9)add_to_inventory()
+-> if item_name in inventory:
+(Pdb) s
+> /root/work/study_Python/05_Dictionaries_and_Structuring_Data/dragonInventory.py(10)add_to_inventory()
+-> item_total = int(inventory[item_name]) + 1
+(Pdb) l
+  5     def add_to_inventory(inventory, added_items):
+  6         for i in range(len(added_items)):
+  7             item_name = added_items[i]
+  8             item_total = 0
+  9             if item_name in inventory:
+ 10  ->             item_total = int(inventory[item_name]) + 1
+ 11                 inventory[item_name] = item_total
+ 12             else:
+ 13                 inventory[item_name] = 1
+ 14                 #inventory.setdefault(item_name, 1)
+ 15         i = i+1
+(Pdb) s
+> /root/work/study_Python/05_Dictionaries_and_Structuring_Data/dragonInventory.py(11)add_to_inventory()
+-> inventory[item_name] = item_total
+(Pdb) l
+  6         for i in range(len(added_items)):
+  7             item_name = added_items[i]
+  8             item_total = 0
+  9             if item_name in inventory:
+ 10                 item_total = int(inventory[item_name]) + 1
+ 11  ->             inventory[item_name] = item_total
+ 12             else:
+ 13                 inventory[item_name] = 1
+ 14                 #inventory.setdefault(item_name, 1)
+ 15         i = i+1
+ 16         return inventory
+(Pdb) p inventory[item_name]
+42
+(Pdb) s
+> /root/work/study_Python/05_Dictionaries_and_Structuring_Data/dragonInventory.py(6)add_to_inventory()
+-> for i in range(len(added_items)):
+(Pdb) p inventory[item_name]
+43
+(Pdb) a
+inventory = {'gold coin': 43, 'rope': 1}
+added_items = ['gold coin', 'dagger', 'gold coin', 'gold coin', 'ruby']
+(Pdb) s
+> /root/work/study_Python/05_Dictionaries_and_Structuring_Data/dragonInventory.py(7)add_to_inventory()
+-> item_name = added_items[i]
+(Pdb) s
+> /root/work/study_Python/05_Dictionaries_and_Structuring_Data/dragonInventory.py(8)add_to_inventory()
+-> item_total = 0
+(Pdb) s
+> /root/work/study_Python/05_Dictionaries_and_Structuring_Data/dragonInventory.py(9)add_to_inventory()
+-> if item_name in inventory:
+(Pdb) s
+> /root/work/study_Python/05_Dictionaries_and_Structuring_Data/dragonInventory.py(13)add_to_inventory()
+-> inventory[item_name] = 1
+(Pdb) l
+  8             item_total = 0
+  9             if item_name in inventory:
+ 10                 item_total = int(inventory[item_name]) + 1
+ 11                 inventory[item_name] = item_total
+ 12             else:
+ 13  ->             inventory[item_name] = 1
+ 14                 #inventory.setdefault(item_name, 1)
+ 15         i = i+1
+ 16         return inventory
+ 17
+ 18     def display_inventory(inventory):
+(Pdb) p  inventory[item_name]
+*** KeyError: 'dagger'
+(Pdb) s
+> /root/work/study_Python/05_Dictionaries_and_Structuring_Data/dragonInventory.py(6)add_to_inventory()
+-> for i in range(len(added_items)):
+(Pdb) l
+  1     dragon_loot = ['gold coin', 'dagger', 'gold coin', 'gold coin', 'ruby']
+  2     inv = {'gold coin': 42, 'rope': 1}
+  3
+  4     # dragon_loot のアイテムがinv内に存在するか確認し、存在していたら+1する
+  5     def add_to_inventory(inventory, added_items):
+  6  ->     for i in range(len(added_items)):
+  7             item_name = added_items[i]
+  8             item_total = 0
+  9             if item_name in inventory:
+ 10                 item_total = int(inventory[item_name]) + 1
+ 11                 inventory[item_name] = item_total
+(Pdb) p  inventory[item_name]
+1
+(Pdb) a
+inventory = {'gold coin': 43, 'rope': 1, 'dagger': 1}
+added_items = ['gold coin', 'dagger', 'gold coin', 'gold coin', 'ruby']
+(Pdb) s
+> /root/work/study_Python/05_Dictionaries_and_Structuring_Data/dragonInventory.py(7)add_to_inventory()
+-> item_name = added_items[i]
+(Pdb) s
+> /root/work/study_Python/05_Dictionaries_and_Structuring_Data/dragonInventory.py(8)add_to_inventory()
+-> item_total = 0
+(Pdb) s
+> /root/work/study_Python/05_Dictionaries_and_Structuring_Data/dragonInventory.py(9)add_to_inventory()
+-> if item_name in inventory:
+(Pdb) s
+> /root/work/study_Python/05_Dictionaries_and_Structuring_Data/dragonInventory.py(10)add_to_inventory()
+-> item_total = int(inventory[item_name]) + 1
+(Pdb) s
+> /root/work/study_Python/05_Dictionaries_and_Structuring_Data/dragonInventory.py(11)add_to_inventory()
+-> inventory[item_name] = item_total
+(Pdb) s
+> /root/work/study_Python/05_Dictionaries_and_Structuring_Data/dragonInventory.py(6)add_to_inventory()
+-> for i in range(len(added_items)):
+(Pdb) s
+> /root/work/study_Python/05_Dictionaries_and_Structuring_Data/dragonInventory.py(7)add_to_inventory()
+-> item_name = added_items[i]
+(Pdb) s
+> /root/work/study_Python/05_Dictionaries_and_Structuring_Data/dragonInventory.py(8)add_to_inventory()
+-> item_total = 0
+(Pdb) s
+> /root/work/study_Python/05_Dictionaries_and_Structuring_Data/dragonInventory.py(9)add_to_inventory()
+-> if item_name in inventory:
+(Pdb) s
+> /root/work/study_Python/05_Dictionaries_and_Structuring_Data/dragonInventory.py(10)add_to_inventory()
+-> item_total = int(inventory[item_name]) + 1
+(Pdb) s
+> /root/work/study_Python/05_Dictionaries_and_Structuring_Data/dragonInventory.py(11)add_to_inventory()
+-> inventory[item_name] = item_total
+(Pdb) s
+> /root/work/study_Python/05_Dictionaries_and_Structuring_Data/dragonInventory.py(6)add_to_inventory()
+-> for i in range(len(added_items)):
+(Pdb) s
+> /root/work/study_Python/05_Dictionaries_and_Structuring_Data/dragonInventory.py(7)add_to_inventory()
+-> item_name = added_items[i]
+(Pdb) s
+> /root/work/study_Python/05_Dictionaries_and_Structuring_Data/dragonInventory.py(8)add_to_inventory()
+-> item_total = 0
+(Pdb) s
+> /root/work/study_Python/05_Dictionaries_and_Structuring_Data/dragonInventory.py(9)add_to_inventory()
+-> if item_name in inventory:
+(Pdb) s
+> /root/work/study_Python/05_Dictionaries_and_Structuring_Data/dragonInventory.py(13)add_to_inventory()
+-> inventory[item_name] = 1
+(Pdb) s
+> /root/work/study_Python/05_Dictionaries_and_Structuring_Data/dragonInventory.py(6)add_to_inventory()
+-> for i in range(len(added_items)):
+(Pdb) s
+> /root/work/study_Python/05_Dictionaries_and_Structuring_Data/dragonInventory.py(15)add_to_inventory()
+-> i = i+1
+(Pdb) s
+> /root/work/study_Python/05_Dictionaries_and_Structuring_Data/dragonInventory.py(16)add_to_inventory()
+-> return inventory
+(Pdb) s
+--Return--
+> /root/work/study_Python/05_Dictionaries_and_Structuring_Data/dragonInventory.py(16)add_to_inventory()->{'dagger': 1, 'gold coin': 45, 'rope': 1, 'ruby': 1}
+-> return inventory
+(Pdb) a
+inventory = {'gold coin': 45, 'rope': 1, 'dagger': 1, 'ruby': 1}
+added_items = ['gold coin', 'dagger', 'gold coin', 'gold coin', 'ruby']
+(Pdb) l
+ 11                 inventory[item_name] = item_total
+ 12             else:
+ 13                 inventory[item_name] = 1
+ 14                 #inventory.setdefault(item_name, 1)
+ 15         i = i+1
+ 16  ->     return inventory
+ 17
+ 18     def display_inventory(inventory):
+ 19         print("Inventry:")
+ 20         item_total = 0
+ 21         for k, v in inventory.items():
+(Pdb) s
+> /root/work/study_Python/05_Dictionaries_and_Structuring_Data/dragonInventory.py(30)<module>()
+-> display_inventory(inv)
+
+～略～
+
+(Pdb) c
+Inventry:
+45  gold coin
+1  rope
+1  dagger
+1  ruby
+Total number if items: 48
 ```
