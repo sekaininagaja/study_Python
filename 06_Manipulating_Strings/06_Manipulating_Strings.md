@@ -75,10 +75,21 @@ How are you?
 I'm doing fine.
 >>>
 ```
+```python
+>>> print('Dear Alice,\n\nEve\'s cat has been arrested for catnapping, cat burglary, and extortion.\n\nSincerely,\nBob')
+Dear Alice,
+
+Eve's cat has been arrested for catnapping, cat burglary, and extortion.
+
+Sincerely,
+Bob
+>>>
+```
 
 ### 生文字列
 - 文字列の最初の引用符の前にrを置く
 - 生文字列はすべてのエスケープ文字を完全に無視する(バックスラッシュはバックスラッシュとして出力する)
+- 正規表現を表すのに便利
 
 ```python
 >>> print(r'That is Carol\'s cat.')
@@ -86,4 +97,72 @@ That is Carol\'s cat.
 >>>
 ```
 
-これは生の文字列であるため、Pythonはバックスラッシュをエスケープ文字の先頭ではなく文字列の一部と見なします。 生の文字列は、次の章で説明する正規表現に使用される文字列など、多くの円記号を含む文字列値を入力する場合に役立ちます。
+### 三重引用符
+- printするときに3つのシングルクォーテーションまたは3つのダブルクォートでくくる(`'''`, `"""`)
+- 三重引用符の間の引用符、タブ、または改行は、文字列の一部とみなされる
+- Pythonブロックの字下げ規則は、複数行の文字列内の行には適用されない
+
+```python
+>>> print('''Dear Alice,
+...
+... Eve's cat has been arrested for catnapping, cat burglary, and extortion.
+...
+... Sincerely,
+... Bob''')
+Dear Alice,
+
+Eve's cat has been arrested for catnapping, cat burglary, and extortion.
+
+Sincerely,
+Bob
+>>>
+```
+
+### 複数行コメント
+- 3つのダブルクオートでくくる
+
+```python
+"""
+コメントコメント
+コメントコメントコメントコメントコメントコメント
+"""
+```
+
+## インデックスおよび文字列のスライス
+文字列は、リストと同じ方法でインデックスとスライスを使用します。  
+文字列 `Hello world！` を例に考えてみます。  
+文字列内の各文字をリストとして、対応する索引を持つ項目として指定します。  
+スペースと感嘆符は文字数に含まれているので、 `Hello world！` はインデックス0(H)からインデックス11(!)までの、12文字の長さです。  
+
+```
+' 文字列:  H   e   l   l   o       w   o   r   l   d    !   '
+  Index :  0   1   2   3   4   5   6   7   8   9   10   11
+```
+
+あるインデックスから別のインデックスまでの範囲を指定すると、**開始インデックスが含まれ、終了インデックスは含まれません。**
+
+```python
+>>> spam = 'Hello world!'
+>>> spam[0]
+'H'
+>>> spam[4]
+'o'
+>>> spam[-1]
+'!'
+>>> spam[0:5] <-- インデックス0(H)は含む。インデックス5( )は含まない。
+'Hello'
+>>> spam[6:]
+'world!'
+>>>
+```
+
+下記は変数のスライスを別の変数に取り込む方法です。  
+文字列をスライスして部分文字列として別の変数に格納することで、文字列全体と部分文字列の両方を手軽に利用できます。
+
+```python
+>>> spam = 'Hello world!'  <-- 文字列全体
+>>> fizz = spam[0:5]       <-- 部分文字列
+>>> fizz
+'Hello'
+>>>
+```
