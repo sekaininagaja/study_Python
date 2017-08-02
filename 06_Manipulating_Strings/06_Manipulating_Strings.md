@@ -314,3 +314,183 @@ Passwords can only have letters and numbers.
 Select a new password (letters and numbers only):
 test
 ```
+
+## startswith(), endswith()
+
+- startswith() : 呼び出された文字列値がメソッドに渡された文字列で開始している場合「True」
+- endswith() : 呼び出された文字列値がメソッドに渡された文字列で終わっている場合「True」
+
+```python
+>>> 'Hello world!'.startswith('Hello')
+True
+>>> 'Hello world!'.endswith('world!')
+True
+>>> 'abc123'.startswith('abcdef')
+False
+>>> 'abc123'.endswith('12')
+False
+>>> 'Hello world!'.startswith('Hello world!')
+True
+>>> 'Hello world!'.endswith('Hello world!')
+True
+```
+
+これらのメソッドは、全体ではなく文字列の **最初** または **最後** の部分が判定する文字列と等しいかどうかだけをチェックする必要がある場合、「== equals演算子」に変わる便利な方法です。  
+
+
+## join(), split()
+
+- join() : 文字列のリストに対して呼び出すと、1つの文字列値に結合する。  
+  `'デリミタ'.join(['A', 'B', 'C'])` とすると、指定したデリミタで区切って出力する。
+- split() : それは文字列値に対して呼び出すと、文字列のリストを返す。  
+  `'aaa,bbb,ccc'.split('デリミタ')` とすると、指定したデリミタの位置で区切って出力する(通常のデリミタはスペースかタブ)。  
+  split()の一般的な使い方は、複数行の文字列を改行文字に沿って分割すること。
+
+```python
+# join()
+
+# デリミタはカンマ(,)
+>>> ', '.join(['cats', 'rats', 'bats'])
+'cats, rats, bats'
+
+# デリミタはスペース
+>>> ' '.join(['My', 'name', 'is', 'Simon'])
+'My name is Simon'
+
+# デリミタはABC
+>>> 'ABC'.join(['My', 'name', 'is', 'Simon'])
+'MyABCnameABCisABCSimon'
+```
+
+```python
+# split()
+
+# デリミタ指定なし(デフォルトのスペースで区切る)
+>>> 'My name is Simon'.split()
+['My', 'name', 'is', 'Simon']
+
+# デリミタは「ABC」
+>>> 'MyABCnameABCisABCSimon'.split('ABC')
+['My', 'name', 'is', 'Simon']
+
+# デリミタは「m」
+>>> 'My name is Simon'.split('m')
+['My na', 'e is Si', 'on']
+```
+
+split() を使用して、改行に沿って分割する。  
+改行文字`\n` を引数として、`split('\n')` のようにsplitメソッドに渡す。  
+すると、改行に沿ってスパムに格納されている複数行の文字列を分割し、各項目が文字列の1行に対応するリストを返すことができます。
+
+```python
+spam = '''Dear Alice,
+How have you been? I am fine.
+There is a container in the fridge
+that is labeled "Milk Experiment".
+
+Please do not drink it.
+Sincerely,
+Bob'''
+
+print(spam.split('\n'))
+
+# 結果
+['Dear Alice,', 'How have you been? I am fine.', 'There is a container in the fridge', 'that is labeled "Milk Experiment".', '', 'Please do not drink it.', 'Sincerely,', 'Bob']
+```
+
+
+## rjust(), ljust(), center()
+
+- rjust() : 文字列にスペース(または任意の文字)を挿入して、引数で指定した文字数となるようにテキストを整形する(右寄せ)。
+- ljust() : 文字列にスペース(または任意の文字)を挿入して、引数で指定した文字数となるようにテキストを整形する(左寄せ)
+- center() : 文字列にスペース(または任意の文字)を挿入して、引数で指定した文字数となるようにテキストを整形する(中央揃え)
+
+```python
+# 文字長が「10文字」になるようにスペースを挿入
+>>> 'Hello'.rjust(10) # 右寄せ
+'     Hello'
+>>> 'Hello'.ljust(10) # 左寄せ
+'Hello     '
+
+# 文字長が「20文字」になるようにスペースを挿入
+>>> 'Hello'.rjust(20)
+'               Hello'
+>>> 'Hello World'.rjust(20)
+'         Hello World'
+
+# スペーサーを指定する場合は、第2引数で指定する
+>>> 'Hello'.rjust(20, '*')
+'***************Hello'
+>>> 'Hello'.ljust(20, '-')
+'Hello---------------'
+
+# 中央寄せ
+>>> 'Hello'.center(20)
+'       Hello        '
+>>> 'Hello'.center(20, '=')
+'=======Hello========'
+```
+
+これらの方法は、適切な間隔を持つ表形式のデータを印刷する必要がある場合に特に便利です。  
+文字列の長さが何文字であるかわからなくても、文字列がきちんと整列されるようにすることができます。  
+
+```python
+# picnicTable.py
+def print_picnic(items_dict, left_width, right_width):
+    print('PICNIC ITEMS'.center(left_width + right_width, '-'))
+    for k, v in items_dict.items():
+        print(k.ljust(left_width, '.') + str(v).rjust(right_width))
+
+picnic_items = {'sandwitches': 4, 'apples': 12, 'cookies': 8000}
+print_picnic(picnic_items, 12, 5)  #第2, 第3引数として、左右の列をどれだけ広げたいかを指定する
+print_picnic(picnic_items, 20, 6)
+
+# 結果
+---PICNIC ITEMS--
+sandwitches.    4
+apples......   12
+cookies..... 8000
+-------PICNIC ITEMS-------
+sandwitches.........     4
+apples..............    12
+cookies.............  8000
+```
+
+## strip(), rstrip(), lstrip()
+
+下記のメソッドは、文字列に含まれる空白(または任意の文字)を取り除く場合に使います。  
+
+- strip() : 先頭または末尾に空白(または任意の文字)を含まない新しい文字列を返す
+- rstrip() : 右端から空白(または任意の文字)を削除
+- lstrip() : 左端から空白(または任意の文字)を削除
+
+```python
+>>> spam = '     Hello World     '
+
+>>> spam.strip()
+'Hello World'
+
+>>> spam.lstrip()
+'Hello World     '
+
+>>> spam.rstrip()
+'     Hello World'
+```
+
+```python
+# 両端から任意の文字を取り除く場合
+>>> spam = 'SpamSpamBaconSpamEggsSpamSpam'
+
+# 「文字」として認識されるっぽい(文字列じゃなく順番関係ないみたい)。'ampS' でも 'mapS'でも 'Spam' でも結果は同じ
+>>> spam.strip('ampS')
+'BaconSpamEggs'
+>>> spam.strip('Spam')
+'BaconSpamEggs'
+```
+
+## pyperclipモジュールによる文字列のコピーと貼り付け
+
+pyperclipモジュールには、コンピュータのクリップボードとの間でテキストを送受信できるcopy()関数とpaste())関数があります。  
+プログラムの出力をクリップボードに送信すると、その他のソフトウェアに簡単に貼り付けることができます。  
+
+PyperclipにはPythonは付属していません。 インストールするには、付録Aのサードパーティ製モジュールのインストール手順に従ってください。
