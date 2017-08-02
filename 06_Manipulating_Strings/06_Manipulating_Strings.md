@@ -262,3 +262,55 @@ upper() と lower() の文字列メソッド自体は文字列を返すので、
 >>> 'HELLO'.lower().islower()
 True
 ```
+
+## その他の isX 文字列メソッド
+
+islower() と isupper() に加えて、「is」で始まる名前を持ついくつかの文字列メソッドがあります。
+これらのメソッドは、文字列の性質を記述するブール値を返します。
+
+- isalpha() : 文字列が **文字のみ** の場合「True」
+- isalnum() : 文字列が **文字と数字のみ** の場合に「True」 ★英数字であるかをテスト
+- isdecimal() : 文字列が **数字のみ** の場合「True」 ★10進数であるかのテスト
+- isspace() : 文字列が **空白、タブ、改行のみ** の場合「True」
+- istitle() : 文字列の **最初の1文字が大文字であと全部小文字** (例.Hello) の場合「True」
+
+```python
+>>> 'hello'.isalpha()
+True
+>>> 'hello123'.isalpha()
+False
+>>> 'hello123'.isalnum()
+True
+>>> 'hello'.isalnum()
+True
+>>> '123'.isdecimal()
+True
+>>> '      '.isspace()
+True
+>>> 'This Is Title Cace'.istitle()
+True
+>>> 'This Is Title Cace 123'.istitle()
+True
+>>> 'This Is not Title Cace'.istitle()
+False
+>>> 'This Is NOT Title Cace Either'.istitle()
+False
+```
+
+isX 文字列メソッドは、ユーザー入力を検証する必要がある場合に役立ちます。
+たとえば、次のプログラムは、有効な入力を提供するまで、ユーザーに年齢とパスワードを繰り返し尋ねます。  
+
+```python
+# validateInput.py
+
+Enter your age:
+forty two
+Please enter a number for your age.
+Enter your age:
+42
+Select a new password (letters and numbers only):
+test!!
+Passwords can only have letters and numbers.
+Select a new password (letters and numbers only):
+test
+```
