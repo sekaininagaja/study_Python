@@ -166,3 +166,99 @@ Bob
 'Hello'
 >>>
 ```
+
+## in や not in 演算子を文字列に対して使う
+
+`in` および `not in` 演算子は、リスト値とまったく同じように文字列でも使用できます。  
+`in` または `not in` を使用して結合された2つの文字列を持つ式は、真または偽のブール値で評価されます。  
+これらの式は、最初の文字列(大文字と小文字を区別する)が、2番目の文字列内にあるかどうかをテストします。  
+
+```python
+>>> 'Hello' in 'Hello World'
+True
+
+>>> 'Hello' in 'Hello'
+True
+
+>>> 'HELLO' in 'Hello World'
+False
+
+>>> '' in 'spam'  # この結果は意外だった！
+True
+
+>>> 'cats' not in 'cats and dogs'
+False
+```
+
+
+# 便利な文字列メソッド
+
+文字列メソッドは文字列を分析したり、変換された文字列値を作成したりします。  
+このセクションでは、いくつかのよく使われる方法について説明します。  
+
+## upper(), lower(), isupper(), islower()
+
+### upper(), lower()
+
+- upper() : 小文字を大文字に変換
+- lower() : 大文字を小文字に変換
+
+```python
+>>> spam = 'Hello world!'
+
+# 大文字に変換
+>>> spam = spam.upper()
+>>> spam
+'HELLO WORLD!'
+
+# 小文字に変換
+>>> spam = spam.lower()
+>>> spam
+'hello world!'
+```
+これらのメソッドは文字列自体を変更するのではなく、新しい文字列値を返すだけなので、元の文字列を変更する場合は元の文字列が格納されている変数に新しい文字列を割り当てる必要があります。  
+このため、`spam = spam.upper()` のようにしてspam文字列を変更しています。  
+
+大文字小文字を区別しない比較を行う必要がある場合は、upper() と lower() が役立ちます。
+ユーザーが実際には `Great`, `great`, `GREAT`, または `grEAT` と入力したとしても、すべて「great (またはGREAT)」として処理できるようになります。
+
+### isupper(), islower()
+
+- isupper() : 文字列内のすべての文字が大文字である場合「True」、それ以外の場合「False」
+- islower() : 文字列内のすべての文字が小文字である場合「True」、それ以外の場合「False」
+
+```python
+>>> spam = 'Hello world!'
+>>> spam.islower()
+False
+>>> spam.isupper()
+False
+
+>>> 'HELLO'.isupper()
+True
+>>> 'abc12345'.islower()
+True
+
+# 文字列に「文字」が1文字も含まれていない場合
+>>> '12345'.islower()
+False
+>>> '12345'.isupper()
+False
+```
+
+upper() と lower() の文字列メソッド自体は文字列を返すので、返された文字列の値についても文字列メソッドを呼び出すことができます。  
+これを行う式は、一連のメソッド呼び出しのように見えます。  
+
+```python
+>>> 'Hello'.upper()
+'HELLO'
+>>> 'Hello'.upper().lower()
+'hello'
+>>> 'Hello'.upper().lower().upper()
+'HELLO'
+
+>>> 'HELLO'.lower()
+'hello'
+>>> 'HELLO'.lower().islower()
+True
+```
