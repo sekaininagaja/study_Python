@@ -1,3 +1,4 @@
+
 #! python3
 # py.py - An insecure password locker program.
 
