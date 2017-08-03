@@ -490,7 +490,108 @@ cookies.............  8000
 
 ## pyperclipモジュールによる文字列のコピーと貼り付け
 
-pyperclipモジュールには、コンピュータのクリップボードとの間でテキストを送受信できるcopy()関数とpaste())関数があります。  
+pyperclipモジュールには、コンピュータのクリップボードとの間でテキストを送受信できるcopy()関数とpaste()関数があります。  
 プログラムの出力をクリップボードに送信すると、その他のソフトウェアに簡単に貼り付けることができます。  
 
-PyperclipにはPythonは付属していません。 インストールするには、付録Aのサードパーティ製モジュールのインストール手順に従ってください。
+### pyperclipモジュールのインストール
+
+```python
+# インストール
+[root]# pip3 install pyperclip
+Collecting pyperclip
+  Downloading pyperclip-1.5.27.zip
+Installing collected packages: pyperclip
+  Running setup.py install for pyperclip ... done
+Successfully installed pyperclip-1.5.27
+
+# 確認
+[root]# pip list --format=columns
+Package    Version
+---------- -------
+pip        9.0.1
+pyperclip  1.5.27
+setuptools 28.8.0
+```
+
+Linux(CUI)で実施した場合エラーになっちゃった。 -> `Pyperclip could not find a copy/paste mechanism for your system.`
+```python
+>>> import pyperclip
+>>> pyperclip.copy('Hello world!')
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "/root/.pyenv/versions/3.6.1/lib/python3.6/site-packages/pyperclip/clipboards.py", line 125, in __call__
+    raise PyperclipException(EXCEPT_MSG)
+pyperclip.exceptions.PyperclipException:
+    Pyperclip could not find a copy/paste mechanism for your system.
+    For more information, please visit https://pyperclip.readthedocs.org
+```
+
+WindowsのPythonで試した結果。  
+クリップボードの中身を操れてちょっと感動。
+```python
+>>> import pyperclip
+>>> pyperclip.copy('Hello world!')
+>>> pyperclip.paste()
+'Hello world!'
+>>> pyperclip.paste()
+'ああああああああ'
+>>> pyperclip.copy('nonoonno')
+>>> pyperclip.paste()
+'nonoonno'
+```
+
+
+# Project: Password Locker
+
+あなたはおそらく多くの異なるウェブサイトにアカウントを持っています。  
+これらのサイトのいずれかにセキュリティ違反があると、ハッカーは他のすべてのアカウントのパスワードを知るため、それぞれに同じパスワードを使用することは悪い習慣です。  
+1つのマスターパスワードを使用してパスワードマネージャのロックを解除するコンピュータ上のパスワードマネージャソフトウェアを使用することをお勧めします。  
+その後、アカウントのパスワードをクリップボードにコピーし、Webサイトのパスワードフィールドに貼り付けることができます。  
+
+この例で作成するパスワードマネージャプログラムは安全ではありませんが、そのようなプログラムの仕組みの基本的なデモンストレーションを提供しています。  
+
+### Step 1: Program Design and Data Structures
+
+アカウントの名前であるコマンドライン引数（電子メールやブログなど）でこのプログラムを実行できるようにします。  
+そのアカウントのパスワードはクリップボードにコピーされ、ユーザーはこれをパスワードフィールドに貼り付けることができます。  
+このようにして、ユーザーは長く複雑なパスワードを覚えることなくそのパスワードを保持することができます。  
+
+まず書くこと
+
+- シバン
+- プログラムを簡単に説明するコメント
+- アカウントとパスワードで構成された辞書データ
+
+### Step 2: Handle Command Line Arguments
+
+- コマンドライン引数を変数 sys.argv に格納
+- sys.argv リストの最初の項目は、常にプログラムのファイル名('pw.py')を含む文字列でなければなりません。
+- また、2番目の項目は、 最初のコマンドラインの引数になります。
+  このプログラムでは、この引数はパスワードが必要なアカウントの名前です。
+  コマンドライン引数は必須。
+- 追加するのを忘れた場合（つまり、sys.argvリストに値が2つ未満の場合）、ユーザーに使用方法メッセージを表示します
+
+### Step 3: Copy the Right Password
+
+- 変数アカウントに文字列として格納されたアカウント名が、PASSWORDS辞書データ内に存在するかどうか確認する。  
+  - pyperclipモジュールのインポート
+  - pyperclip.copy() を使用してキーの値をクリップボードにコピーす
+- account変数の用意
+  - sys.argv[1] を使用することでこのプログラムでどこでもアカウントを使用することができるが、変数に入れることでプログラムの可読性が良くなる
+
+- コマンドラインプログラムを簡単に起動するための付録Bの手順を使用すると、アカウントパスワードをクリップボードにすばやくコピーできます。
+- 新しいパスワードでプログラムを更新する場合はいつでも、ソースのPASSWORDS辞書の値を変更する必要があります。
+- もちろん、誰でも簡単にコピーできる場所にすべてのパスワードを保存したくないと思うかもしれませんが練習なので（；^ω^）
+
+- このプログラムを修正して、通常のテキストをクリップボードにすばやくコピーするプログラムを作成できます。
+- 同じ株式段落の多くが共通する複数のメールを送信しているとします。
+- 各段落をPASSWORDSディクショナリの値として置くこともできます（この時点で辞書の名前を変更したいと思うでしょう）。
+- そして、多くの標準テキストを素早く選択してクリップボードにコピーする方法があります。
+
+- Windowsでは、WIN-R Runウィンドウでこのプログラムを実行するバッチファイルを作成できます。 （バッチファイルの詳細については、付録Bを参照してください。）
+- ファイルエディタに次のように入力し、ファイルをpw.batとしてC：¥Windowsフォルダに保存します。
+  ```
+  @py.exe C:\Python34\pw.py %*
+  @pause
+  ```
+-   このバッチファイルを作成すると、Windows上でパスワード保護されたプログラムを実行することは、WIN-Rを押してpw <account name>と入力するだけです。
