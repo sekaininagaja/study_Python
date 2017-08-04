@@ -743,3 +743,35 @@ rjust(), ljust(), center()
 
 10. How can you trim whitespace characters from the beginning or end of a string?  
 strip(), rstrip(), lstrip()
+
+
+# Practice Project
+
+## Table Printer
+
+print_table() という名前の関数を記述します。  
+この関数は、文字列のリストを取得し、適切に整理された表に各列を右詰めで表示します。  
+すべての内部リストに同じ数の文字列が含まれるとします。  
+
+```python
+# 例
+tableData = [['apples', 'oranges', 'cherries', 'banana'],
+             ['Alice', 'Bob', 'Carol', 'David'],
+             ['dogs', 'cats', 'moose', 'goose']]
+```
+
+下記のような 3行*4列 の表形式が出力されるように print_table()関数を記述してください。
+```
+apples Alice  dogs
+oranges   Bob  cats
+cherries Carol moose
+banana David goose
+```
+
+ヒント：  
+コードでは、内部の各リストで最も長い文字列を最初に見つけて、列全体がすべての文字列に収まるようにする必要があります。  
+各列の最大幅を整数のリストとして格納できます。
+print_table()関数は、col_widths = [0] * len(tableData) で始めるます。  
+これは、table_dataの内部リストの数と同じ数の0値を含むリストを作成します。
+こうすることで、col_widths[0] は table_data[0] に最長文字列の幅を格納し、col_widths[1] は table_data[1] に最長文字列の幅を格納することができます。
+col_widthsリストの中で最大の値を見つけて、rjust()文字列メソッドに渡す整数幅を調べます。
