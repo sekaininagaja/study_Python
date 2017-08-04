@@ -668,3 +668,78 @@ abbreviation\nLists of cultivars'
 - 行末から末尾の空白を削除
 - テキストを大文字または小文字に変換
 など、他の種類のテキスト操作を自動化したい場合に応用できます。
+
+
+# まとめ
+
+テキストは一般的なデータ形式であり、Pythonには文字列値に格納されたテキストを処理するための多くの有用な文字列メソッドが付属しています。  
+ほとんどのPythonプログラムでは、索引付け、スライシング、および文字列メソッドを使用します。  
+
+今作成しているプログラムは、あまり洗練されていないように見えます。  
+画像やカラフルなテキストのグラフィカルユーザーインターフェイスはありません。   
+これまでは、print()でテキストを表示していて、ユーザがinput()でテキストを入力できるようにしています。  
+しかしながら、ユーザは、クリップボードを通して大量のテキストを素早く入力することができる。
+この能力は、膨大な量のテキストを操作するプログラムを作成するための便利な方法を提供します。   
+これらのテキストベースのプログラムでは、派手なウィンドウやグラフィックスがないかもしれませんが、すばやく多くの有益な作業を行うことができます。  
+
+大量のテキストを操作する別の方法は、ハードドライブからファイルを直接読み書きすることです。  
+次の章でPythonでこれを行う方法を学びます。
+
+Pythonプログラミングのすべての基本的な概念をカバーしています。  
+この本の残りの部分では、引き続き新しい概念を学びますが、タスクを自動化できる便利なプログラムを書くのに十分な知識があります。  
+Webページをダウンロードしたり、スプレッドシートを更新したり、テキストメッセージを送るなど、Pythonの知識が十分にあるとは思えないかもしれませんが、Pythonモジュールがそこに入ります！  
+他のプログラマーによって書かれたこれらのモジュールは、これらすべてのことを簡単に行うための機能を提供します。  
+そこで、役に立つ自動化されたタスクを行うための実際のプログラムを書く方法を学びましょう。  
+
+
+# Practice Questions
+
+1. What are escape characters?
+バックスラッシュ(\)
+
+2. What do the \n and \t escape characters represent?
+- \n : 改行
+- \t : タブ
+
+3. How can you put a \ backslash character in a string?
+こんなかんじで、エスケープしたい文字の直前に置く。
+```
+spam = 'Say hi to Bob\'s mother'
+```
+
+4. The string value "Howl's Moving Castle" is a valid string. Why isn’t it a problem that the single quote character in the word Howl's isn’t escaped?  
+ダブルクオートで囲っている。かつ、中に含むシングルクオートが1個だけ。なので、エスケープは不要。
+
+5. If you don’t want to put \n in your string, how can you write a string with newlines in it?
+三重引用符(`"""` もしくは `'''`) でかく。
+
+6. What do the following expressions evaluate to?
+```
+1. 'Hello world!'[1]
+2. 'Hello world!'[0:5]
+3. 'Hello world!'[:5]
+4. 'Hello world!'[3:]
+```
+1.`e`   /   2.`Hello`   /   3.`Hello`  /   4.`lo world!`
+
+7. What do the following expressions evaluate to?
+```
+1. 'Hello'.upper()
+2. 'Hello'.upper().isupper()
+3. 'Hello'.upper().lower()
+```
+1.`HELLO`  /  2.`True`  /  3.`hello`
+
+8. What do the following expressions evaluate to?
+```
+1. 'Remember, remember, the fifth of November.'.split()
+2. '-'.join('There can be only one.'.split())
+```
+1.`['Remember,', 'remember,', 'the', 'fifth', 'of', 'November.']`  
+2.`'There-can-be-only-one.'`
+
+9. What string methods can you use to right-justify, left-justify, and center a string?  
+rjust(), ljust(), center()
+
+10. How can you trim whitespace characters from the beginning or end of a string?  
+strip(), rstrip(), lstrip()
