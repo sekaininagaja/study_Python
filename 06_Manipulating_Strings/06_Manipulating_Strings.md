@@ -760,18 +760,20 @@ tableData = [['apples', 'oranges', 'cherries', 'banana'],
              ['dogs', 'cats', 'moose', 'goose']]
 ```
 
-下記のような 3行*4列 の表形式が出力されるように print_table()関数を記述してください。
+下記の出力が得られる print_table()関数を記述してください。  
+・3行*4列 の表形式で出力  
+・各リストで最も長い文字列に合わせて右端揃え
 ```
-apples Alice  dogs
-oranges   Bob  cats
+  apples Alice  dogs
+ oranges   Bob  cats
 cherries Carol moose
-banana David goose
+  banana David goose
 ```
 
 ヒント：  
 コードでは、内部の各リストで最も長い文字列を最初に見つけて、列全体がすべての文字列に収まるようにする必要があります。  
 各列の最大幅を整数のリストとして格納できます。
-print_table()関数は、col_widths = [0] * len(tableData) で始めるます。  
+print_table()関数は、col_widths = [0] * len(tableData) で始めます。  
 これは、table_dataの内部リストの数と同じ数の0値を含むリストを作成します。
 こうすることで、col_widths[0] は table_data[0] に最長文字列の幅を格納し、col_widths[1] は table_data[1] に最長文字列の幅を格納することができます。
 col_widthsリストの中で最大の値を見つけて、rjust()文字列メソッドに渡す整数幅を調べます。
