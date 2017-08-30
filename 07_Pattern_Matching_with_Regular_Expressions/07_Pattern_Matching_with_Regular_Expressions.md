@@ -430,3 +430,160 @@ regexオブジェクトには、`search()` メソッドの他に、`findall()` �
    例: ['415-555-9999', '212-555-0000']
 1. `(\d\d\d)-(\d\d\d)-(\d\ d\d\d)`のようにグループを持つ正規表現で呼び出された場合、タプルのリストを返す。  
    例: [('415', '555', '9999'), ('212', '555', '0000')]
+
+# 文字クラス
+
+電話番号の正規表現の例では、`\d` が任意の数値の桁を表すことができることを学びました。   
+つまり、`\d` は正規表現 `(0|1|2|3|4|5|6|7|8|9)` の短縮形です。   
+下記に示すように、このような省略文字クラスが多数あります。  
+
+- \d … 0から9の数字(整数)
+- \d … 0から9の数字(文字としての数字)
+- \w … 任意の文字、数字、またはアンダースコア （これを "単語"文字と一致すると考えてください）
+- \W … 文字、数字、またはアンダースコア以外の文字
+- \s … 任意のスペース、タブ、または改行文字 （これを "スペース"文字と一致すると考えてください）
+- \S … スペース、タブ、または改行ではない文字
+
+文字クラスは、正規表現を短縮するのに適しています。  
+文字クラス`[0-5]`は0〜5の数字にマッチします。  
+これは`(0|1|2|3|4|5)`と同意であり、それよりもはるかに短くなります。  
+
+以下の例で、正規表現`\d+\s\w+`は、1つ以上の数字（\d+）、空白文字（\s）、1つ以上の文字/数字/アンダースコア（\w+）が続くテキストにマッチします。  
+`findall()`メソッドは、リスト内の正規表現パターンに一致するすべての文字列を返します。
+
+```python
+>>> xmasRegex = re.compile(r'\d+\s\w+')
+>>> xmasRegex.findall('12 drummers, 11 pipers, 10 lords, 9 ladies, 8 maids, 7 swans, 6 geese, 5 rings, 4 birds, 3,hens, 2 doves, 1 partridge')
+['12 drummers', '11 pipers', '10 lords', '9 ladies', '8 maids', '7 swans', '6 geese', '5 rings', '4 birds', '2 doves', '1 partridge']
+```
+
+## 独自の文字クラスを作る
+
+一連の文字に一致させたいが、短い文字クラス(\d, \w, \s, など)が広すぎる場合があります。  
+角カッコを使用して独自の文字クラスを定義することができます。  
+たとえば、文字クラス[aeiouAEIOU]は、小文字と大文字のいずれの母音とも一致します。  
+
+```python
+>>> vowelRegex = re.compile(r'[aeiouAEIOU]')
+>>> vowelRegex.findall('Robocop eats baby food.BABY FOOD.')
+['o', 'o', 'o', 'e', 'a', 'a', 'o', 'o', 'A', 'O', 'O']
+```
+
+また、ハイフンを使用して文字や数字の範囲を含めることもできます。  
+たとえば、文字クラス`[a-zA-Z0-9]`は、すべての小文字、大文字、および数字と一致します。  
+
+角括弧の中で、通常の正規表現シンボルはそのように解釈されないことに注意してください。  
+つまり、先行するバックスラッシュで `*？()` をエスケープする必要はありません。  
+たとえば、文字クラス`[0-5.]`は0から5までの数字とピリオドに一致します。
+`[0-5\.]`と書く必要はありません。
+
+文字クラスの開始括弧の直後にキャレット文字 `^` を配置することで、負の文字クラスを作成できます。  
+負の文字クラスは、文字クラスにないすべての文字と一致します。  
+下記は、母音以外のすべての文字にマッチします。
+
+```python
+>>> consonantRegex = re.compile(r'[^aeiouAEIOU]')
+>>> consonantRegex.findall('Robocop eats baby food.BABY FOOD.')
+['R', 'b', 'c', 'p', ' ', 't', 's', ' ', 'b', 'b', 'y', ' ', 'f', 'd', '.', 'B', 'B', 'Y', ' ', 'F', 'D', '.']
+```
+
+## キャレット(^) と ダラー($) 記号 … "先頭が〜〜ではじまる" "末尾が〜〜でおわる" にマッチ
+
+先頭にキャレット記号`^`をつけると、「先頭が〜〜ではじまる」のマッチを表せます。  
+同様に、最後にドル記号`$`をつけると「末尾が〜〜で終わる」を表せます。   
+また、`^`と`$`を一緒に使用すると、文字列全体が正規表現と一致する必要があることを示すことができます。  
+つまり、文字列の一部のサブセットで一致するには不十分です。
+
+たとえば、`r'^Hello'` は 'Hello'で始まる文字列と一致します。
+
+```python
+>>> beginsWithHello = re.compile(r'^Hello')
+
+# 'Hello' にマッチする
+>>> beginsWithHello.search('Hello world!')
+<_sre.SRE_Match object; span=(0, 5), match='Hello'>
+
+# 'Hello' ではじまらないのでマッチしない
+>>> beginsWithHello.search('He said hello.') == None
+True
+```
+
+`r'\d$'` は0〜9の数字で終わる文字列と一致します。
+
+```python
+>>> endWithHello = re.compile(r'\d$')
+
+# 最後の数字(2) にマッチ
+>>> endWithHello.search('Your number is 42')
+<_sre.SRE_Match object; span=(16, 17), match='2'>
+
+# 最後が数字じゃない(.) のでマッチしない
+>>> endWithHello.search('Your number is forty two.') == None
+True
+```
+
+`r'^\d+$'` は1文字以上の数字で始まり、数字で終わる文字列と一致します。
+
+```python
+>>> wholeStrinlsNum = re.compile(r'^\d+$')
+>>> wholeStrinlsNum.search('1234567890')
+<_sre.SRE_Match object; span=(0, 10), match='1234567890'>
+>>> wholeStrinlsNum.search('12345xyz67890') == None
+True
+>>> wholeStrinlsNum.search('12 34567890') == None
+True
+```
+
+## ワイルドカード(.) … "任意の一文字"にマッチ
+
+ドット`.` はワイルドカードと呼ばれ、改行以外の任意の文字と一致します。  
+ドット文字はただ1文字にマッチすることに注意してください。  
+下記の例のうち、'flat' は 'lat' としてマッチしているでしょう。  
+
+```python
+>>> atRegex = re.compile(r'.at')
+>>> atRegex.findall('The cat in the hat sat on the flat mat.')
+['cat', 'hat', 'sat', 'lat', 'mat']
+```
+
+もし、.そのものにマッチさせる必要がある場合は `\.` のようにバックスラッシュでエスケープします。
+
+
+## ドットスター(.\*) … "すべての文字列"にマッチ
+
+時々、あなたはすべてと何かを一致させたいと思うでしょう。   
+たとえば、文字列 'First Name:' に続く任意のすべてのテキストや、'Last Name:' の後に何かが続いた場合に一致するとします。  
+ドットスター `.*` を使用して「何でも」を表すことができます。  
+ドット文字は「改行以外の任意の1文字」を意味し、スター文字は「0以上の先行文字」を意味します。
+
+```python
+>>> nameRegex = re.compile(r'First Name: (.*) Last Name: (.*)')
+>>> mo = nameRegex.search('First Name: AI Last Name: Sweigart')
+>>> mo.group(1)
+'AI'
+>>> mo.group(2)
+'Sweigart'
+```
+
+ドットスターは欲張りモードを使用します。可能な限り多くのテキストを常に一致させようとします。  
+非倫理的な方法ですべてのテキストを照合するには、`.*?` を使用します。  
+中括弧のときと同様に、疑問符はPythonにひかえめなマッチをするように指示します。
+
+```python
+# 控えめモード
+>>> nongreedyRegex = re.compile(r'<.*?>')
+>>> mo = nongreedyRegex.search('<To serve man> for dinner.>')
+>>> mo.group()
+'<To serve man>'
+
+# 欲張りモード
+>>> greedyRegex = re.compile(r'<.*>')
+>>> mo = greedyRegex.search('<To serve man> for dinner.>')
+>>> mo.group()
+'<To serve man> for dinner.>'
+```
+
+両方の正規表現は大まかには「開き角括弧に一致し、その後に何かが続き、閉じ角括弧が続く」と解釈されます。  
+しかし、文字列 '<To serve man>' には、閉じ角括弧に2つの一致があります。   
+正規表現のひかえめなバージョンでは、Pythonは可能な限り短い文字列をマッチさせます: '<To serve man>'  
+欲張りなバージョンでは、Pythonは可能な限り長い文字列と一致します: '<To serve man> for dinner.>'
