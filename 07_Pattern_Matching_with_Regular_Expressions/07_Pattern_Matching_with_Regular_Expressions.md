@@ -587,3 +587,22 @@ True
 しかし、文字列 '<To serve man>' には、閉じ角括弧に2つの一致があります。   
 正規表現のひかえめなバージョンでは、Pythonは可能な限り短い文字列をマッチさせます: '<To serve man>'  
 欲張りなバージョンでは、Pythonは可能な限り長い文字列と一致します: '<To serve man> for dinner.>'
+
+
+## ドットで改行を含む表現
+
+ドットスターは、改行以外のすべてにマッチします。
+`re.compile()` の2番目の引数として `re.DOTALL` を渡すことで、改行文字を含むすべての文字にドット文字を一致させることができます。  
+
+```
+>>> noNewlineRegex = re.compile('.*')
+>>> noNewlineRegex.search('Serve the public trust. \nProtect the inncent.\nUphold the law.').group()
+'Serve the public trust. '
+
+>>> newlineRegex = re.compile('.*',re.DOTALL)
+>>> newlineRegex.search('Serve the public trust. \nProtect the inncent.\nUphold the law.').group()
+'Serve the public trust. \nProtect the inncent.\nUphold the law.'
+```
+
+re.DOTALLなしの `noNewlineRegex` は、最初の改行文字までしか一致しません。  
+re.DOTALLありの `newlineRegex` は、改行を含むすべてにマッチします。  
