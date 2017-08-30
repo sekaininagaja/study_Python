@@ -32,3 +32,32 @@ True
 Moshi moshi is a phone number:
 False
 ```
+
+forループの各反復で、メッセージからの12文字の新しいチャンクが変数チャンクに割り当てられます。  
+たとえば、最初の反復では、iは0、チャンクにはメッセージ[0:12]（つまり、 'Call me at 4'）が割り当てられます。  
+次の反復では、iは1で、チャンクにはメッセージ[1:13]（文字列 'all at at 41'）が割り当てられます。  
+チャンクを`is_phone_number()`に渡して、電話番号パターンと一致するかどうかを確認します。  
+一致する場合は、チャンクをprintします。
+
+メッセージをループし続けると、最終的にチャンク内の12文字が電話番号になります。  
+ループは文字列全体を調べ、各12文字のピースをテストし、`is_phone_number()` を満たすチャンクをprintします。  
+すべてのメッセージを精査したら、Doneをprintします。  
+
+```python
+message = 'Call me at 415-555-1011 tomorrow. 415-555-9999 is my office.'
+for i in range(len(message)):
+      chunk = message[i:i+12]
+      if isPhoneNumber(chunk):
+      print('Phone number found: ' + chunk)
+print('Done')
+```
+
+``` python
+# メッセージ内から電話番号だけ抜き出す
+Phone number found: 415-555-1011
+Phone number found: 415-555-9999
+Done
+```
+
+この例でのメッセージ文字列は短いものの、数百万文字でもプログラムは1秒未満で実行されます。  
+正規表現を使って電話番号を見つける同様のプログラムも1秒未満で実行されますが、正規表現ではこれらのプログラムをより早く書けます。  
