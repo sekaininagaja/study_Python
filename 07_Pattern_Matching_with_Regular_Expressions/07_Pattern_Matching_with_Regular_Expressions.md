@@ -606,3 +606,123 @@ True
 
 re.DOTALLなしの `noNewlineRegex` は、最初の改行文字までしか一致しません。  
 re.DOTALLありの `newlineRegex` は、改行を含むすべてにマッチします。  
+
+
+# 正規表現シンボルのレビュー
+
+この章ではたくさんの表記法について説明しましたので、ここで学んだことを簡単に見ていきましょう。
+
+- ？ : 前のグループの **0または1** にマッチ
+- \* : 前のグループの **0回以上の繰り返し** にマッチ
+- + : 前のグループの **1回以上の繰り返し** にマッチ
+- {n} : 前のグループの **n回繰り返し** にマッチ
+- {n,} : 前のグループの **n回〜無制限** の繰り返しにマッチ
+- {,m} : 前のグループの **0からm回の繰り返し** にマッチ
+- {n,m} : 先行するグループの **少なくともn個と多くともm個** にマッチ(欲張りなマッチ)
+- {n,m}？ または \*？ または +？ : 前のグループの控えめなマッチ
+- ^spam : 文字列がspamで始まらなければならない
+- spam$ : 文字列がspamで終わらなければならない
+- . : 改行文字を除く任意の文字にマッチ
+- \d, \w, \s : それぞれ数字、単語、または空白文字とマッチ
+- \D, \W, \S : それぞれ数字、単語、または空白文字以外のものとマッチ
+- [abc] : a,b,c の任意の文字にマッチ
+- [^abc] : a,b,c 以外の文字にマッチ
+
+# 大文字と小文字を区別しないマッチング
+
+通常、正規表現はテキストを指定した大文字と一致させます。  
+たとえば、次の正規表現は完全に異なる文字列にマッチします。
+
+しかし、大文字か小文字かを気にせずに文字をマッチングさせることだけが気になることもあります。  
+regexを大文字と小文字を区別しないようにするには、`re.compile()` の第2引数として `re.IGNORECASE` または `re.I` を渡します。  
+
+```python
+# 複数のマッチさせる文字列を書かないといけない
+>>> regex1 = re.compile('Robocop')
+>>> regex2 = re.compile('ROBOCOP')
+>>> regex3 = re.compile('robOcop')
+>>> regex4 = re.compile('RobocOp')
+
+# 大文字小文字を区別しない場合
+>>> robocop = re.compile(r'robocop',re.I)
+>>> robocop.search('Robocop is part man, part machine, all cop.').group()
+'Robocop'
+
+>>> robocop.search('ROBOCOP protects the innocent.').group()
+'ROBOCOP'
+
+>>> robocop.search('AI, why does your programming book talk about robocop so much?').group()
+'robocop'
+```
+
+# sub()メソッドに文字列を代入する … マッチした文字列の置換
+
+正規表現はテキストパターンを見つけるだけでなく、それらのパターンの代わりに新しいテキストを置き換えることもできます。  
+Regexオブジェクトの`sub()`メソッドには2つの引数が渡されます。  
+最初の引数は、一致するものを置き換える文字列です。  
+2番目は正規表現の文字列です。  
+`sub()` メソッドは、置換が適用された文字列を返します。
+
+```python
+>>> namesRegex = re.compile(r'Agent \w+')
+>>> namesRegex.sub('CENSORED','Agent Alice gave the secret documents to Agent Bob.')
+'CENSORED gave the secret documents to CENSORED.'
+```
+
+場合によっては、一致するテキスト自体を置換の一部として使用する必要があります。  
+`sub()` の最初の引数には、`\1, \2, \3` などと入力して、「グループ1,2,3などのテキストを置換に入力する」ことを意味します。
+
+たとえば、名前の最初の文字を表示するだけで、秘密エージェントの名前を検閲したいとします。  
+これを行うには、regexエージェント `(\w)\w*` を使用して、`r'\1****'` を `sub()` の最初の引数として渡すことができます。  
+その文字列の `\1` は、グループ1と一致するテキスト、つまり正規表現の`(\w)`グループに置き換えられます。
+
+```python
+# Agent につづく文字列は名前とみなしてマスクする
+>>> agentNameRegex = re.compile(r'Agent (\w)\w*')
+>>> agentNameRegex.sub(r'\1****', 'Agent Alice told Agent Carol thet Agent Eve knew Agent Bob was a double agent.')
+'A**** told C**** thet E**** knew B**** was a double agent.'
+```
+
+## 複雑な正規表現の管理
+
+一致させる必要があるテキストパターンが単純な場合、正規表現は問題ありません。  
+しかし、複雑なテキストパターンにマッチさせるには、長く複雑な正規表現を必要とするかもしれません。  
+正規表現文字列内の空白とコメントを無視するように `re.compile()` に指示することで、これを軽減できます。  
+この "冗長モード" は `re.compile()` の第2引数として変数 `re.VERBOSE` を渡すことで有効にできます。
+
+```python
+# 読みにくい正規表現の例
+phoneRegex = re.compile(r'((\d{3}|\(\d{3}\))?(\s|-|\.)?\d{3}(\s|-|\.)\d{4}
+(\s*(ext|x|ext.)\s*\d{2,5})?)')
+
+# トリプルクオートで複数行に分割し、re.VERBOSEで空白を無視する。さらにコメントをつけ、読みやすくしている。
+phoneRegex = re.compile(r'''(
+    (\d{3}|\(\d{3}\))?            # area code
+    (\s|-|\.)?                    # separator
+    \d{3}                         # first 3 digits
+    (\s|-|\.)                     # separator
+    \d{4}                         # last 4 digits
+    (\s*(ext|x|ext.)\s*\d{2,5})?  # extension
+    )''', re.VERBOSE)
+```
+
+正規表現文字列内のコメントルールは、通常のPythonコードと同じです。  
+また、正規表現の複数行文字列の余分なスペースは、一致するテキストパターンの一部とはみなされません。  
+これにより正規表現を整理して読みやすくなります。
+
+## re.IGNORECASE, re.DOTALL, and re.VERBOSE の組み合わせ
+
+`re.VERBOSE` を使用して正規表現でコメントを書く場合、`re.IGNORECASE` を使用して大文字小文字を無視したい場合はどうすればよいですか？  
+残念ながら、`re.compile()`関数は2つ目の引数として1つの値しか取りません。  
+そんなときは、 `re.IGNORECASE` `re.DOTALL` `re.VERBOSE` 変数を、パイプ文字（|）を使用して組み合わせることで、この制限を回避することができます。  
+この文字列はビット単位または演算子として知られています。
+
+したがって、大文字と小文字を区別せず、ドット文字に一致する改行を含む正規表現が必要な場合は、次のように`re.compile()`を呼び出します。
+
+```python
+>>> someRegexValue = re.compile('foo', re.IGNORECASE | re.DOTALL | re.VERBOSE)
+```
+
+この構文は古風なもので、Pythonの初期のバージョンに由来しています。  
+ビット単位の演算子の詳細は、この本の範囲を超えていますが、詳細は http://nostarch.com/automatestuff/ のリソースを参照してください。  
+2番目の引数には他のオプションも渡すことができます。これらは珍しいですが、リソースについてももっと詳しく読むことができます。  
