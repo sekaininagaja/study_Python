@@ -154,3 +154,185 @@ Pythonで正規表現を使用するにはいくつかのステップがあり�
 
 対話型シェルにサンプルコードを入力することをお勧めしますが、Webベースの正規表現テスターを使用して、正規表現が入力したテキストとどのように一致するかを正確に示すことができます。  
 おすすめのテスター -> http://regexpal.com/
+
+# 正規表現によるパターンマッチングの強化
+
+Pythonで正規表現オブジェクトを作成して見つける基本的な手順を知ったので、より強力なパターンマッチング機能のいくつかを試してみましょう。  
+
+## かっこ`()` でグループ化する
+市外局番と残りの電話番号とを区別したいとします。  
+かっこを追加すると正規表現にグループが作成されます。`(\d\d\d)-(\d\d\d-\d\d\d\d)`  
+次に、マッチオブジェクトの`group()`メソッドを使用して、1つのグループから一致するテキストを取得します。
+
+正規表現文字列の最初の括弧セットはグループ1になります。  
+2番目のセットはグループ2になります。  
+1または2の整数をマッチオブジェクトの`group()`メソッドに渡すことで、マッチしたテキストの異なる部分を取得できます。  
+`group()`メソッドに0または何も渡さないと、一致したテキスト全体が返されます。  
+
+すべてのグループを一度に取得したい場合は、`groups()`メソッドを使用してください。  
+名前に複数のフォームがあることに注意してください。
+`mo.groups()`は複数の値からなるタプルを返すので、`area_code, main_number = mo.groups()` のように複数の割り当てトリックを使用して各値を別々の変数に割り当てることができます。  
+
+```python
+>>> phone_number_regex = re.compile(r'(\d\d\d)-(\d\d\d-\d\d\d\d)')
+>>> mo = phone_number_regex.search('My number is 415-555-4242.')
+
+>>> mo.group(1)
+'415'
+>>> mo.group(2)
+'555-4242'
+>>> mo.group(0)
+'415-555-4242'
+>>> mo.group()
+'415-555-4242'
+
+>>> mo.groups()
+('415', '555-4242')
+>>> area_code, main_number = mo.groups()
+>>> print(area_code)
+415
+>>> print(main_number)
+555-4242
+```
+
+括弧は正規表現では特別な意味を持ちますが、括弧をテキストにマッチさせる必要がある場合はどうしますか？   
+たとえば、あなたが照合しようとしている電話番号に、括弧内に市外局番が設定されている可能性があります。  
+この場合、`(`と`)`をバックスラッシュでエスケープする必要があります。
+`re.compile()` に渡される生の文字列の `\(` および `\)` は `()` にマッチします。
+
+```python
+>>> phone_num_regex = re.compile(r'(\(\d\d\d\)) (\d\d\d-\d\d\d\d)')
+>>> mo = phone_num_regex.search('My phone number is (415) 555-4242.')
+>>> mo.group(1)
+'(415)'
+>>> mo.group(2)
+'555-4242'
+```
+
+## 複数のグループとパイプのマッチング
+
+`|` はパイプと呼ばれます。多くの式のいずれかと一致したい場所であればどこでも使えます。  
+たとえば、正規表現 `r'Batman|Tina Fey'` は、'Batman' または 'Tina Fey' にマッチします。  
+
+検索された文字列に 'Batman' と 'Tina Fey' の両方が出現すると、最初に出現した方がMatchオブジェクトとして返されます。  
+（のちほど説明する `findall()` を使用すると、出現するすべての文字列を検索できますが閑話休題）
+
+```python
+>>> heroRegex = re.compile(r'Batman|Tina Fey')
+
+>>> mo1 = heroRegex.search('Batman and Tina Fey.')
+>>> mo1.group()
+'Batman'
+
+>>> mo2 = heroRegex.search('Tina Fey and Batman.')
+>>> mo2.group()
+'Tina Fey'
+```
+
+パイプを使用して、正規表現の一部としていくつかのパターンの1つをマッチさせることもできます。  
+たとえば、「Batman」「Batmobile」「Batcopter」「Batbat」のいずれかの文字列に一致させたいとします。   
+これらの文字列はすべて **Bat** で始まるので、その接頭辞を1回だけ指定できるといいでしょう。  
+これは、かっこで行うことができます。
+
+`mo.group(1)` は最初のかっこのグループ 'mobile' 内の一致したテキストの一部を返しますが、メソッドコール `mo.group()` は完全一致のテキスト 'Batmobile' を返します。  
+パイプ文字とグループ化括弧を使用すると、正規表現に一致させるいくつかの代替パターンを指定できます。  
+
+```python
+>>> batRegex = re.compile(r'Bat(man|mobile|copter|bat)')
+>>> mo = batRegex.search('Batmobile lost a wheel')
+>>> mo.group()
+'Batmobile'
+>>> mo.group(1)
+'mobile'
+```
+
+もし、パイプそのものにマッチさせる必要がある場合は `\|` のようにバックスラッシュでエスケープします。
+
+## クエスチョンマーク(?) … "あってもなくても"にマッチ
+
+オプションで一致させたいパターンがある場合もあります。  
+つまり、そのビットがそこにあるかどうかにかかわらず、正規表現は一致を見つけなければなりません。  
+**?** は、それをパターンのオプション部分として先行するグループにフラグを立てます。  
+
+`(wo)?`パターンは、`wo` がオプションのグループであることを意味します。   
+正規表現は、`wo`がついている、または、`wo`がついていないテキストと一致します。  
+これは正規表現が 'Batwoman'と 'Batman'の両方にマッチする理由です。
+
+```python
+>>> batRegex = re.compile(r'Bat(wo)?man')
+
+>>> mo1 = batRegex.search('The Adventures of Batman')
+>>> mo1.group()
+'Batman'
+
+>>> mo2 = batRegex.search('The Adventures of Batwoman')
+>>> mo2.group()
+'Batwoman'
+```
+
+以前の電話番号の例を使用すると、正規表現に市外局番を持つ電話番号があるかどうかを調べることができます。  
+
+```python
+>>> phoneRegex = re.compile(r'(\d\d\d-)?\d\d\d-\d\d\d\d')
+
+>>> mo1 = phoneRegex.search('My number is 415-555-4242')
+>>> mo1.group()
+'415-555-4242'
+
+>>> mo2 = phoneRegex.search('My number is 555-4242.')
+>>> mo2.group()
+'555-4242'
+```
+
+もし、?そのものにマッチさせる必要がある場合は `\?` のようにバックスラッシュでエスケープします。
+
+## スター(\*) … "0回以上の繰り返し" にマッチ
+
+スター **\*** は、「0以上の一致」を意味します。  
+スターに先行するグループは、テキスト内で何回も出現することができます。  
+それは全く存在しないか、何度も繰り返すことができます。 バットマンの例をもう一度見てみましょう。  
+
+'Batman' の場合、`(wo)*` 部分は、文字列中に `wo` 部分は出現しないのでないものとして`Batman`にマッチします。  
+'Batwoman'の場合、`(wo)*` は `wo` 部分にマッチします。  
+'Batwowowowoman' の場合、`(wo)*` は `wowowowowowo` 部分にマッチします。
+
+```python
+>>> batRegex = re.compile(r'Bat(wo)*man')
+
+>>> mo1 = batRegex.search('The Adbentures of Batman')
+>>> mo1.group()
+'Batman'
+
+>>> mo2 = batRegex.search('The Adbentures of Batwoman')
+>>> mo2.group()
+'Batwoman'
+
+>>> mo3 = batRegex.search('The Adbentures of Batwowowowowowoman')
+>>> mo3.group()
+'Batwowowowowowoman'
+```
+
+もし、\*そのものにマッチさせる必要がある場合は `\*` のようにバックスラッシュでエスケープします。
+
+## プラス(\+) … "1回以上の繰り返し" にマッチ
+
+**\*** は「0回以上の繰り返し」を意味しました。**+** は「1回以上の繰り返し」を意味します。
+
+```python
+>>> batRegex = re.compile(r'Bat(wo)+man')
+
+>>> mo1 = batRegex.search('The Adventures of Batwoman')
+>>> mo1.group()
+'Batwoman'
+
+>>> mo2 = batRegex.search('The Adventures of Batwowowowoman')
+>>> mo2.group()
+'Batwowowowoman'
+
+# (wo)+ は'Batman' にマッチしない
+>>> mo3 = batRegex.search('The Adbentures of Batman')
+>>> mo3 == None
+True
+```
+
+もし、+そのものにマッチさせる必要がある場合は `\+` のようにバックスラッシュでエスケープします。
