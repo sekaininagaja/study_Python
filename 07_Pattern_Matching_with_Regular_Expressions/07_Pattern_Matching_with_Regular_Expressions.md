@@ -837,3 +837,158 @@ media@nostarch.com
 academic@nostarch.com
 info@nostarch.com
 ```
+
+# 類似のアイデア
+
+テキストのパターンを特定する（そして`sub()`メソッドでそれらを置き換える）には、さまざまな潜在的なアプリケーションがあります。
+
+- WEBサイトのURLを探す(begin with http:// or https://.)
+- 異なる日付形式を標準形式の日付に置き換える(2015年3月14日、03-14-2015、2015/3/14など)
+- 社会保障やクレジットカード番号などの機密情報を削除する
+- テキストのリント(単語の間の複数のスペース、誤って偶然に繰り返される単語、または文の最後に複数の感嘆符などの共通のタイプミス)
+
+
+# まとめ
+
+コンピュータはテキストをすばやく検索できますが、検索する内容を正確に伝える必要があります。   
+正規表現では、探している文字の正確なパターンを指定できます。   
+実際、一部のワープロやスプレッドシートアプリケーションでは、正規表現を使用して検索するための検索置換機能が提供されています。
+
+Pythonに付属のreモジュールを使うと、Regexオブジェクトをコンパイルできます。   
+これらの値には、単一の一致を検索する `search()` 一致するすべてのインスタンスを検索する `findall()`、テキストの検索置換置換を実行する `sub()` など、いくつかのメソッドがあります。
+
+もっと正規表現のシンタックスを知りたい場合は公式ドキュメント、チュートリアルを参照のこと。
+- http://docs.python.org/3/library/re.html  
+- http://www.regular-expressions.info/  
+
+文字列を操作して一致させるための専門知識があるので、今度はコンピュータのハードドライブ上のファイルを読み書きする方法を学びましょう。
+
+# 練習問題
+
+1. What is the function that creates Regex objects?  
+- re.compile()
+
+2. Why are raw strings often used when creating Regex objects?
+- バックスラッシュによるエスケープだと複雑になるから
+
+3. What does the search() method return?
+- 最初にマッチした文字列
+
+4. How do you get the actual strings that match the pattern from a Match object?
+- group()
+
+5. In the regex created from r'(\d\d\d)-(\d\d\d-\d\d\d\d)', what does group 0 cover? Group 1? Group 2?
+- group0: (数字3桁)-(数字3桁-数字4桁)
+- group1: (数字3桁)
+- group2: (数字3桁-数字4桁)
+
+6. Parentheses and periods have specific meanings in regular expression syntax. How would you specify that you want a regex to match actual parentheses and period characters?
+- () や . 自体にマッチさせたいときはバックスラッシュでエスケープする -> `\(` `\)` `\.`
+
+7. The findall() method returns a list of strings or a list of tuples of strings. What makes it return one or the other?
+- 正規表現にグループが存在しない場合はリストを返す
+- 正規表現にグループが存在する場合はタプルを返す
+
+8. What does the | character signify in regular expressions?
+
+Q:
+
+9. What two things does the ? character signify in regular expressions?
+
+Q:
+
+10. What is the difference between the + and * characters in regular expressions?
+
+Q:
+
+11. What is the difference between {3} and {3,5} in regular expressions?
+
+Q:
+
+12. What do the \d, \w, and \s shorthand character classes signify in regular expressions?
+
+Q:
+
+13. What do the \D, \W, and \S shorthand character classes signify in regular expressions?
+
+Q:
+
+14. How do you make a regular expression case-insensitive?
+
+Q:
+
+15. What does the . character normally match? What does it match if re.DOTALL is passed as the second argument to re.compile()?
+
+Q:
+
+16. What is the difference between these two: .* and .*?
+
+Q:
+
+17. What is the character class syntax to match all numbers and lowercase letters?
+
+Q:
+
+18. If numRegex = re.compile(r'\d+'), what will numRegex.sub('X', '12 drummers, 11 pipers, five rings, 3 hens') return?
+
+Q:
+
+19. What does passing re.VERBOSE as the second argument to re.compile() allow you to do?
+
+Q:
+
+20. How would you write a regex that matches a number with commas for every three digits? It must match the following:
+
+'42'
+
+'1,234'
+
+'6,368,745'
+
+but not the following:
+
+'12,34,567' (which has only two digits between the commas)
+
+'1234' (which lacks commas)
+
+Q:
+
+21. How would you write a regex that matches the full name of someone whose last name is Nakamoto? You can assume that the first name that comes before it will always be one word that begins with a capital letter. The regex must match the following:
+
+'Satoshi Nakamoto'
+
+'Alice Nakamoto'
+
+'Robocop Nakamoto'
+
+but not the following:
+
+'satoshi Nakamoto' (where the first name is not capitalized)
+
+'Mr. Nakamoto' (where the preceding word has a nonletter character)
+
+'Nakamoto' (which has no first name)
+
+'Satoshi nakamoto' (where Nakamoto is not capitalized)
+
+Q:
+
+22. How would you write a regex that matches a sentence where the first word is either Alice, Bob, or Carol; the second word is either eats, pets, or throws; the third word is apples, cats, or baseballs; and the sentence ends with a period? This regex should be case-insensitive. It must match the following:
+
+'Alice eats apples.'
+
+'Bob pets cats.'
+
+'Carol throws baseballs.'
+
+'Alice throws Apples.'
+
+'BOB EATS CATS.'
+
+but not the following:
+
+'Robocop eats apples.'
+
+'ALICE THROWS FOOTBALLS.'
+
+'Carol eats 7 cats.'
