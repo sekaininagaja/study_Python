@@ -803,3 +803,12 @@ phone_num変数には、一致したテキストのグループ1,3,5、および
 電話番号や電子メールアドレスが見つからなかった場合、プログラムはユーザーにこれを伝える必要があります。  
 
 ## プログラムを実行する
+
+-> 自分で手書きしたやつがエラーになる・・・
+
+```
+Traceback (most recent call last):
+  File "C:\pass\to\file\phone_and_email.py", line 28, in <module>
+    if groups[8] != '':
+IndexError: tuple index out of range
+```
