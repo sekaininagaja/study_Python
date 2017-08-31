@@ -14,12 +14,13 @@ phone_regex = re.compile(r'''(
 
 # email regex.
 email_regex = re.compile(r'''(
-    [a-zA-Z0-9._%=-]+       # username
+    [a-zA-Z0-9._%+-]+       # username
     @                       # @ symbol
     [a-zA-Z0-9.-]+          # domain name
     (\.[a-zA-Z]{2,4})       # dot-something
     )''', re.VERBOSE)
 
+#import pdb; pdb.set_trace() デバッグ用
 # Find matches in clipboard text.
 text = str(pyperclip.paste())
 matches = []
@@ -37,4 +38,4 @@ if len(matches) > 0:
     print('Copied to clipboard:')
     print('\n'.join(matches))
 else:
-    print('No phone numbers or email addresses foun.')
+    print('No phone numbers or email addresses found.')
