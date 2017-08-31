@@ -806,9 +806,34 @@ phone_num変数には、一致したテキストのグループ1,3,5、および
 
 -> 自分で手書きしたやつがエラーになる・・・
 
-```
+```python
 Traceback (most recent call last):
   File "C:\pass\to\file\phone_and_email.py", line 28, in <module>
     if groups[8] != '':
 IndexError: tuple index out of range
+```
+
+-> 写し間違いだった＼(^o^)／ﾌｧｰ!!!
+
+```python
+# phone_number regex.
+phone_regex = re.compile(r'''(
+    (\d{3}|\(\d{3}\))?      # area core
+    (\s|-|\.)?              # separator
+    (\d{3})                 # first 3 digits
+    (\s|-|\.)               # separator
+    (\d{4})                 # last 4 digits  <-- 追記
+    (\s*(ext|x|ext.)\s*(\d{2,5}))? # extension
+    )''', re.VERBOSE)
+```
+
+```python
+Copied to clipboard:
+800-420-7240
+415-863-9900
+415-863-9950
+info@nostarch.com
+media@nostarch.com
+academic@nostarch.com
+info@nostarch.com
 ```
