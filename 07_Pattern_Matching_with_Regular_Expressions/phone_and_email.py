@@ -21,7 +21,7 @@ email_regex = re.compile(r'''(
     )''', re.VERBOSE)
 
 # Find matches in clipboard text.
-text = str(pyoerclip.paste())
+text = str(pyperclip.paste())
 matches = []
 for groups in phone_regex.findall(text):
     phone_num = '-'.join([groups[1], groups[3], groups[5]])
@@ -38,4 +38,3 @@ if len(matches) > 0:
     print('\n'.join(matches))
 else:
     print('No phone numbers or email addresses foun.')
-
