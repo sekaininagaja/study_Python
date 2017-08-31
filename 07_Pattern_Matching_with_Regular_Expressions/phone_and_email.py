@@ -9,7 +9,7 @@ phone_regex = re.compile(r'''(
     (\s|-|\.)?              # separator
     (\d{3})                 # first 3 digits
     (\s|-|\.)               # separator
-    (\s\(ext|x|ext.\)\s*(\d{2,5}))? # extension
+    (\s*(ext|x|ext.)\s*(\d{2,5}))? # extension
     )''', re.VERBOSE)
 
 # email regex.
