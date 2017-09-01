@@ -149,7 +149,7 @@ Pythonで正規表現を使用するにはいくつかのステップがあり�
 
 1. `import re` でregexモジュールをインストールする
 1. `re.compile()`関数を使用してregexオブジェクトを作成する。このとき **生文字列** を使用すること。
-1. 検索する文字列をregexオブジェクトの`search()`メソッドに渡す。`Matchオブジェクト`が反る。
+1. 検索する文字列をregexオブジェクトの`search()`メソッドに渡す。`Matchオブジェクト`が返る。
 1. Matchオブジェクトの`group()`メソッドを呼び出して、実際に一致したテキストの文字列を返す。
 
 対話型シェルにサンプルコードを入力することをお勧めしますが、Webベースの正規表現テスターを使用して、正規表現が入力したテキストとどのように一致するかを正確に示すことができます。  
@@ -885,110 +885,131 @@ Pythonに付属のreモジュールを使うと、Regexオブジェクトをコ�
 6. Parentheses and periods have specific meanings in regular expression syntax. How would you specify that you want a regex to match actual parentheses and period characters?
 - () や . 自体にマッチさせたいときはバックスラッシュでエスケープする -> `\(` `\)` `\.`
 
-7. The findall() method returns a list of strings or a list of tuples of strings. What makes it return one or the other?
+7. The findall() method returns a list of strings or a list of tuples of strings. What makes it return one or the other?  
 - 正規表現にグループが存在しない場合はリストを返す
 - 正規表現にグループが存在する場合はタプルを返す
 
-8. What does the | character signify in regular expressions?
-
-Q:
+8. What does the | character signify in regular expressions?  
+- 複数の正規表現を扱う
 
 9. What two things does the ? character signify in regular expressions?
-
-Q:
+- 控えめなマッチをおこなう
+- グループが"あってもなくても"マッチする
 
 10. What is the difference between the + and * characters in regular expressions?
-
-Q:
+- * は0回以上の繰り返し
+- + は1回以上の繰り返し
 
 11. What is the difference between {3} and {3,5} in regular expressions?
-
-Q:
+- {3} は直前のグループを3回繰り返しにマッチ
+- {3,5} は直前のグループの3〜5回の繰り返しにマッチ
 
 12. What do the \d, \w, and \s shorthand character classes signify in regular expressions?
-
-Q:
+- \d は数字
+- \w は単語
+- \s はスペースやタブ
 
 13. What do the \D, \W, and \S shorthand character classes signify in regular expressions?
-
-Q:
+- \d は数字以外
+- \w は単語以外
+- \s はスペースやタブ以外
 
 14. How do you make a regular expression case-insensitive?
-
-Q:
+- re.compile() の第2引数として re.I もしくは re.IGNORECASE をわたす
 
 15. What does the . character normally match? What does it match if re.DOTALL is passed as the second argument to re.compile()?
-
-Q:
+- 通常は「改行以外の任意の1文字」にマッチする
+- re.DOTALL を第2引数としてわたすと、改行文字にもマッチする
 
 16. What is the difference between these two: .* and .*?
-
-Q:
+- .* はすべての文字列にマッチ(欲張りなマッチ)
+- .*? は可能な限り短い文字列にマッチ(控えめなマッチ)
 
 17. What is the character class syntax to match all numbers and lowercase letters?
-
-Q:
+- [a-z0-9]
 
 18. If numRegex = re.compile(r'\d+'), what will numRegex.sub('X', '12 drummers, 11 pipers, five rings, 3 hens') return?
-
-Q:
+- X drummers, X pipers, five rings, X hens'
 
 19. What does passing re.VERBOSE as the second argument to re.compile() allow you to do?
-
-Q:
+- 空白、タブを無視
 
 20. How would you write a regex that matches a number with commas for every three digits? It must match the following:
 
 '42'
-
 '1,234'
-
 '6,368,745'
 
 but not the following:
 
 '12,34,567' (which has only two digits between the commas)
-
 '1234' (which lacks commas)
 
-Q:
+きたない・・・
+
+- re.compile(r'((^\d{1,3}$)|(^(\d{1,3},)?(\d{3},*)?(\d{3})$))')
+```python
+^\d{1,3}$)    # 0~999 は別途対応
+|             # パイプ
+^(\d{1,3},)?  # カンマで区切った一番左の部分(1〜3桁の可能性)
+(\d{3},*)?    # カンマで区切った真ん中の部分(3桁固定、存在しない可能性)
+(\d{3})$)     # カンマで区切った一番右の部分(3桁固定)
+```
+
+- re.compile(r'((^\d{1,3}$)|((^\d{1,3},)(\d{3},)*(\d{3}$)))')
+```python
+^\d{1,3}$)    # 0~999 は別途対応
+|             # パイプ
+(^\d{1,3},)   # カンマで区切った一番左の部分(1〜3桁の可能性)
+(\d{3},)*     # カンマで区切った真ん中の部分(3桁固定、0回以上の繰り返し)
+(\d{3}$)      # カンマで区切った一番右の部分(3桁固定)
+```
 
 21. How would you write a regex that matches the full name of someone whose last name is Nakamoto? You can assume that the first name that comes before it will always be one word that begins with a capital letter. The regex must match the following:
 
 'Satoshi Nakamoto'
-
 'Alice Nakamoto'
-
 'Robocop Nakamoto'
 
 but not the following:
 
 'satoshi Nakamoto' (where the first name is not capitalized)
-
 'Mr. Nakamoto' (where the preceding word has a nonletter character)
-
 'Nakamoto' (which has no first name)
-
 'Satoshi nakamoto' (where Nakamoto is not capitalized)
 
-Q:
+- re.compile(r'(^[A-Z][a-z]+) *Nakamoto')
 
 22. How would you write a regex that matches a sentence where the first word is either Alice, Bob, or Carol; the second word is either eats, pets, or throws; the third word is apples, cats, or baseballs; and the sentence ends with a period? This regex should be case-insensitive. It must match the following:
 
 'Alice eats apples.'
-
 'Bob pets cats.'
-
 'Carol throws baseballs.'
-
 'Alice throws Apples.'
-
 'BOB EATS CATS.'
 
 but not the following:
 
 'Robocop eats apples.'
-
 'ALICE THROWS FOOTBALLS.'
-
 'Carol eats 7 cats.'
+
+- re.compile(r'(Alice|Bob|Carol) (eats|pets|throws) (apples|cats|baseballs)\.$', re.IGNORECASE)
+
+
+# 練習プロジェクト
+
+## 強力なパスワード検出
+
+正規表現を使用して渡されるパスワード文字列が強固であることを確認する関数を記述します。   
+強力なパスワードの条件は下記の通り。  
+- 少なくとも8文字の長さ
+- 大文字と小文字の両方を含む
+- 少なくとも1桁の数字を持つ
+強度を検証するために、複数の正規表現パターンに対して文字列をテストする必要があるかもしれません。
+
+## 正規表現の strip()バージョン
+
+文字列を受け取り、strip()文字列メソッドと同じことをする関数を記述します。  
+文字列以外の引数が渡されない場合、空白文字は文字列の先頭と末尾から削除されます。  
+それ以外の場合は、関数の2番目の引数で指定された文字が文字列から削除されます。
