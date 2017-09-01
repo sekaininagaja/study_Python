@@ -141,3 +141,137 @@ drwxr-xr-x  2 hoge  wheel  68  9  2 03:21 ccc
 
 /var/tmp/gomi//sugukeshitene/aaa/bbb/ccc:
 ```
+
+# os.path モジュール
+
+os.pathモジュールには、ファイル名やファイルパスに関連する多くの便利な機能が含まれています。  
+たとえば、 `os.path.join()` を使用して、すべてのオペレーティングシステムで動作する方法でパスを構築したとします。   os.path はosモジュール内のモジュールなので、import osを実行するだけでインポートできます。  
+プログラムがファイル、フォルダ、またはファイルパスを処理する必要がある場合は、このセクションの短い例を参照してください。   os.pathモジュールの完全なドキュメントは、PythonのWebサイト（http://docs.python.org/3/library/os.path.html）にあります。
+
+このセクションで続く例のほとんどはosモジュールを必要とするので、あなたが書き込むスクリプトの始めとIDLEを再起動するときはいつもそれをインポートしてください。   
+さもなければ、あなたはNameErrorを得るでしょう `NameError: name 'os' is not defined`
+
+## 絶対パスと相対パスの処理
+
+os.pathモジュールは、相対パスの絶対パスを返す関数と、指定されたパスが絶対パスかどうかをチェックする関数を提供します。  
+
+- `os.path.abspath(path)` を呼び出すと、引数の絶対パスの文字列が返されます。  
+  これは、相対パスを絶対パスに変換する簡単な方法です。
+- `os.path.isabs(path)` を呼び出すと、引数が絶対パスの場合はTrueを返し、相対パスの場合はFalseを返します。
+- `os.path.relpath(path, start)` を呼び出すと、開始パスからパスまでの相対パスの文字列が返されます。  
+  startが指定されていない場合は、現在の作業ディレクトリが開始パスとして使用されます。
+
+```python
+>>> os.path.abspath('.')
+'/Users/hoge/path/to/dir'
+
+>>> os.path.abspath('../')
+'/Users/hoge/path/to'
+
+>>> os.path.isabs('.')
+False
+
+>>> os.path.isabs(os.path.abspath('.'))
+True
+
+>>> os.path.relpath('/var/tmp/', '/')
+'var/tmp'
+>>>
+>>> os.path.relpath('/var/tmp/', '/etc')
+'../var/tmp'
+```
+
+`os.path.dirname(path) `を呼び出すと、path引数の最後のスラッシュの前に来るすべての文字列が返されます。  
+`os.path.basename(path)` を呼び出すと、path引数の最後のスラッシュの後に来るすべての文字列が返されます。
+
+```python
+>>> path = '/Users/hoge/path/to/dir/hoge.md'
+
+>>> os.path.basename(path)
+'hoge.md'
+
+>>> os.path.dirname(path)
+'/Users/hoge/path/to/dir'
+```
+
+パスのディレクトリ名とベース名が必要な場合は、os.path.split() を呼び出して、次のように2つの文字列でタプル値を取得できます。
+`os.path.dirname()` と `os.path.basename()` を呼び出して戻り値をタプルに入れて、同じタプルを作成できることに注意してください。  
+しかし、両方の値が必要な場合は、 `os.path.split()` は素敵なショートカットです。
+
+```python
+>>> calcFilePath = '/Users/hoge/path/to/dir/hoge.md'
+
+# os.path.split
+>>> os.path.split(calcFilePath)
+('/Users/hoge/path/to/dir', 'hoge.md')
+
+# os.path.dirname と os.path.basename
+>>> (os.path.dirname(calcFilePath), os.path.basename(calcFilePath))
+('/Users/hoge/path/to/dir', 'hoge.md')
+```
+
+また、`os.path.split()` はファイルパスを取らず、各フォルダの文字列のリストを返します。  
+そのためには、`split()` 文字列メソッドを使用し、os.sepの文字列を分割します。  
+以前のバージョンから、プログラムを実行するコンピュータのos.sep変数が正しいフォルダ区切りに設定されていることを思い出してください。
+OS XおよびLinuxシステムでは、返されるリストの先頭に空白の文字列があります。
+
+```python
+# windows
+>>> calcFilePath.split(os.path.sep)
+['C:', 'Windows', 'System32', 'calc.exe']
+
+# mac, linux
+>>> '/usr/bin'.split(os.path.sep)
+['', 'usr', 'bin']
+```
+
+split()文字列メソッドは、パスの各部分のリストを返すように動作します。  
+os.path.sepを渡すと、どのオペレーティングシステムでも動作します。
+
+## ファイルサイズとフォルダの内容の検索
+
+ファイルパスを処理する方法があれば、特定のファイルとフォルダに関する情報の収集を開始できます。  
+os.pathモジュールは、バイト単位のファイルのサイズと、指定されたフォルダ内のファイルとフォルダを見つけるための関数を提供します。
+
+- os.path.getsize(path) を呼び出すと、path引数のファイルのサイズがバイト単位で返されます。
+- os.listdir(path) を呼び出すと、path引数の各ファイルのファイル名文字列のリストが返されます。  
+ （この関数はos.pathにではなく、osモジュールにあることに注意してください。）
+
+```python
+>>> os.path.getsize('C:\\Windows\\System32\\calc.exe')
+776192
+>>> os.listdir('C:\\Windows\\System32')
+['0409', '12520437.cpx', '12520850.cpx', '5U877.ax', 'aaclient.dll',
+--snip--
+'xwtpdui.dll', 'xwtpw32.dll', 'zh-CN', 'zh-HK', 'zh-TW', 'zipfldr.dll']
+```
+
+このディレクトリ内のすべてのファイルの合計サイズを調べたい場合は、os.path.getsize() と os.listdir() を一緒に使用できます。
+
+```python
+>>> totalSize = 0
+>>> for filename in os.listdir('C:\\Windows\\System32'):
+      totalSize = totalSize + os.path.getsize(os.path.join('C:\\Windows\\System32', filename))
+
+>>> print(totalSize)
+1117846456
+```
+
+lsでみたファイルサイズを取ってくるっぽい(?) 実際のファイルサイズとは違いそうだけど・・
+
+```python
+>>> os.path.getsize('../.git')
+510
+
+# ls
+drwxr-xr-x  15 hoge  staff  510  9  2 03:26 .git  <-- ls結果
+
+# duで見たときとちがう
+$ du -cs ../.git/
+808     ../.git/
+```
+
+C:\Windows\System32 フォルダ内の各ファイル名をループすると、totalSize変数は各ファイルのサイズによって増分されます。   
+os.path.getsize() を呼び出すと、os.path.join()を使用してフォルダ名を現在のファイル名に結合する方法に注目してください。  
+os.path.getsize() が返す整数が totalSizeの値に加算されます。  
+すべてのファイルをループした後、totalSizeを表示して、C:\Windows\System32 フォルダの合計サイズを確認します。
