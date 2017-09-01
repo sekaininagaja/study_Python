@@ -1008,8 +1008,71 @@ but not the following:
 - 少なくとも1桁の数字を持つ
 強度を検証するために、複数の正規表現パターンに対して文字列をテストする必要があるかもしれません。
 
+```python
+# strong_password_detection.py
+Input Password:
+hoge
+NG: This password is too short. (must be over 8 char)
+
+Input Password:
+hogehoge
+NG: This password has not number. (must be contain at least 1 number)
+
+Input Password:
+hogehoge3
+NG: This password has not uppercase. (must be contain uppercase)
+
+Input Password:
+HOGEHOGE3
+NG: This password has not lowercase. (must be contain lowercase)
+
+Input Password:
+hogehogeHOGE3
+OK: This passsword is strong.
+```
+
+
 ## 正規表現の strip()バージョン
 
 文字列を受け取り、strip()文字列メソッドと同じことをする関数を記述します。  
 文字列以外の引数が渡されない場合、空白文字は文字列の先頭と末尾から削除されます。  
-それ以外の場合は、関数の2番目の引数で指定された文字が文字列から削除されます。 
+それ以外の場合は、関数の2番目の引数で指定された文字が文字列から削除されます。
+
+-> split と strip まちがえた・・
+
+```python
+# splitppoi.py
+
+# (1)
+Please input message.
+123 4 56 78
+Please input delimiter.
+
+123 4 56 78
+
+# (2)
+Please input message.
+123 4 5 67asfasfa
+Please input delimiter.
+,
+123,4,5,67asfasfa
+```
+
+-> stripもどき
+```python
+# stripppoi.py
+
+# (1)
+Please input message.
+          hoge
+Please input remove charcter.
+
+hoge
+
+# (2)
+Please input message.
+##hoge##
+Please input remove charcter.
+#
+hoge
+```
