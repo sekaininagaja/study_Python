@@ -275,3 +275,37 @@ C:\Windows\System32 フォルダ内の各ファイル名をループすると、
 os.path.getsize() を呼び出すと、os.path.join()を使用してフォルダ名を現在のファイル名に結合する方法に注目してください。  
 os.path.getsize() が返す整数が totalSizeの値に加算されます。  
 すべてのファイルをループした後、totalSizeを表示して、C:\Windows\System32 フォルダの合計サイズを確認します。
+
+## パスの有効性の確認
+
+存在しないパスを指定すると、多くのPython関数がクラッシュし、エラーが発生します。   
+os.pathモジュールは、指定されたパスが存在するかどうか、そしてそれがファイルかフォルダかをチェックする関数を提供します。
+
+- `os.path.exists(path)` を呼び出すと、引数で参照されているファイルまたはフォルダが存在する場合はTrueを返し、存在しない場合はFalseを返します。
+- `os.path.isfile(path)` を呼び出すと、path引数が存在し、ファイルであればTrueを返し、それ以外の場合はFalseを返します。
+- `os.path.isdir(path)` を呼び出すと、path引数が存在し、フォルダであればTrueを返し、それ以外の場合はFalseを返します。
+
+```python
+>>> os.path.exists('/var/tmp')
+True
+
+>>> os.path.exists('/var/tmp/hoge')
+False
+
+>>> os.path.isdir('/var/tmp')
+True
+
+>>> os.path.isdir('/etc/hosts')
+False
+
+>>> os.path.isfile('/etc/hosts')
+True
+```
+
+`os.path.exists()` 関数を使用してチェックすることによって、現在コンピュータに接続されているDVDまたはフラッシュドライブがあるかどうかを判断できます。   
+たとえば、Windowsコンピュータで D:\ という名前のボリュームでフラッシュドライブを確認する場合は、次のようにして実行できます。
+
+```python
+>>> os.path.exists('D:\\')
+False
+```
