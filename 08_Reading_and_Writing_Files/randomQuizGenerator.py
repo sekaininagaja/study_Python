@@ -25,8 +25,7 @@ capitals = {'Alabama': 'Montgomery', 'Alaska': 'Juneau', 'Arizona': 'Phoenix',
    'Charleston', 'Wisconsin': 'Madison', 'Wyoming': 'Cheyenne'}
 
 # Generate 35 quiz files.
-
-for quiz+num in range(35):
+for quiz_num in range(35):
 
     # Create the quiz and answer key files.
     quiz_file = open('capitalsquiz%s.txt' % (quiz_num + 1), 'w')
