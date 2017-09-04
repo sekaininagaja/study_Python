@@ -815,6 +815,14 @@ open（）関数は、ファイルを書き込みモードまたは追加モー�
 この章のmultlipboardプログラムを拡張し、delete <keyword>コマンドライン引数を使用して、シェルフからキーワードを削除します。   
 次に、すべてのキーワードを削除するdeleteコマンドライン引数を追加します。
 
+-> 写経してみたが実行の方法がわからない＼(^o^)／   
+mcb.bak, mcb.dat, mcb.dir の3ファイルは作成される(サイズ0KB)のだけど、下記のようにしても動かない・・・・・・・・
+```
+# Usage: py.exe mcb.pyw save <keyword> - Saves clipboard to keyword.
+#        py.exe mcb.pyw <keyword> - Loads keyword to clipboard.
+#        py.exe mcb.pyw list - Loads all keywords to clipboard.
+```
+
 ## Mad Libs
 
 テキストファイルを読み込んで、ADJECTIVE、NOUN、ADVERB、またはVERBという単語がテキストファイルに表示されている場所で、ユーザーが自分のテキストを追加できるようにするMad Libsプログラムを作成します。   
