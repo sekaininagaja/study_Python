@@ -49,7 +49,7 @@ for quiz_num in range(35):
         del wrong_ansers[wrong_ansers.index(correct_answer)]
         wrong_ansers = random.sample(wrong_ansers, 3)
         answer_options = wrong_ansers + [correct_answer]
-        random.shuffle(answ_options)
+        random.shuffle(answer_options)
 
         # Write the question and answer options to the quiz file.
         quiz_file.write('%s. What is the capital of %s?\n' % (question_num + 1, states[question_num]))
