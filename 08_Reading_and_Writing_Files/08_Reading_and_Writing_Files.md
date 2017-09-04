@@ -664,3 +664,15 @@ Period:
 3. A
 4. C
 ```
+
+-> 下記部分のインデントがずれていたせいでエラーになっていた・・・・・・・
+```python
+quizFile.close()
+answerKeyFile.close()
+```
+```
+Traceback (most recent call last):
+  File "randomQuizGenerator.py", line 55, in <module>
+    quiz_file.write('%s. What is the capital of %s?\n' % (question_num + 1, states[question_num]))
+ValueError: I/O operation on closed file.
+```
