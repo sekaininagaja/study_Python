@@ -33,7 +33,7 @@ for quiz_num in range(35):
 
     # Write out the header for the quiz.
     quiz_file.write('Name:\n\nDate:\n\nPeriod:\n\n')
-    quiz_file.write((' ' * 20) + 'State Capitals Quiz (Form %s)' % (quiz_num + 1))
+    quiz_file.write((' ' * 20) + 'State Capitals Quiz (Form %s)' % (quiz_num + 1), 'w')
     quiz_file.write('\n\n')
 
     # Shuffle the order of the states.
@@ -54,10 +54,11 @@ for quiz_num in range(35):
         # Write the question and answer options to the quiz file.
         quiz_file.write('%s. What is the capital of %s?\n' % (question_num + 1, states[question_num]))
         for i in range(4):
-            quiz_file.write(' %s. %s\n' % ('ABCD'[i], answer_options[i]))
+            quiz_file.write('   %s. %s\n' % ('ABCD'[i], answer_options[i]))
         quiz_file.write('\n')
 
         # Write the answer key to a file.
         answerkey_file.write('%s. %s\n' % (question_num + 1, 'ABCD'[answer_options.index(correct_answer)]))
-        quiz_file.close()
-        answerkey_file.close()
+
+    quiz_file.close()
+    answerkey_file.close()
