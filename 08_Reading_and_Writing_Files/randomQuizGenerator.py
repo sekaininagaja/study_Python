@@ -33,7 +33,7 @@ for quiz_num in range(35):
 
     # Write out the header for the quiz.
     quiz_file.write('Name:\n\nDate:\n\nPeriod:\n\n')
-    quiz_file.write((' ' * 20) + 'State Capitals Quiz (Form %s)' % (quiz_num + 1), 'w')
+    quiz_file.write((' ' * 20) + 'State Capitals Quiz (Form %s)' % (quiz_num + 1))
     quiz_file.write('\n\n')
 
     # Shuffle the order of the states.
