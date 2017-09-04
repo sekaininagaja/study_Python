@@ -21,8 +21,8 @@ capitals = {'Alabama': 'Montgomery', 'Alaska': 'Juneau', 'Arizona': 'Phoenix',
    'Oregon': 'Salem', 'Pennsylvania': 'Harrisburg', 'Rhode Island': 'Providence',
    'South Carolina': 'Columbia', 'South Dakota': 'Pierre', 'Tennessee':
    'Nashville', 'Texas': 'Austin', 'Utah': 'Salt Lake City', 'Vermont':
-   'Montpelier', 'Virginia': 'Richmond', 'Washington': 'Olympia', 'West
-   Virginia': 'Charleston', 'Wisconsin': 'Madison', 'Wyoming': 'Cheyenne'}
+   'Montpelier', 'Virginia': 'Richmond', 'Washington': 'Olympia', 'WestVirginia':
+   'Charleston', 'Wisconsin': 'Madison', 'Wyoming': 'Cheyenne'}
 
 # Generate 35 quiz files.
 
