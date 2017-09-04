@@ -45,10 +45,10 @@ for quiz_num in range(35):
 
         # Get right and wrong answers.
         correct_answer = capitals[states[question_num]]
-        wrong_ansers = list(capitals.values())
-        del wrong_ansers[wrong_ansers.index(correct_answer)]
-        wrong_ansers = random.sample(wrong_ansers, 3)
-        answer_options = wrong_ansers + [correct_answer]
+        wrong_answers = list(capitals.values())
+        del wrong_answers[wrong_answers.index(correct_answer)]
+        wrong_answers = random.sample(wrong_answers, 3)
+        answer_options = wrong_answers + [correct_answer]
         random.shuffle(answer_options)
 
         # Write the question and answer options to the quiz file.
