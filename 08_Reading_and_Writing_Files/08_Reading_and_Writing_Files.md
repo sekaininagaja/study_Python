@@ -807,3 +807,47 @@ open（）関数は、ファイルを書き込みモードまたは追加モー�
 
 9. What data structure does a shelf value resemble?
 - 辞書データ(key と value がある)
+
+# 練習プロジェクト
+
+## マルチクリップボードの拡張
+
+この章のmultlipboardプログラムを拡張し、delete <keyword>コマンドライン引数を使用して、シェルフからキーワードを削除します。   
+次に、すべてのキーワードを削除するdeleteコマンドライン引数を追加します。
+
+## Mad Libs
+
+テキストファイルを読み込んで、ADJECTIVE、NOUN、ADVERB、またはVERBという単語がテキストファイルに表示されている場所で、ユーザーが自分のテキストを追加できるようにするMad Libsプログラムを作成します。   
+たとえば、テキストファイルは次のようになります。
+
+```
+The ADJECTIVE panda walked to the NOUN and then VERB. A nearby NOUN was
+unaffected by these events.
+```
+
+プログラムは、これらの出現を見つけ、それらを置き換えるようにユーザに促す。
+
+```
+Enter an adjective:
+silly
+Enter a noun:
+chandelier
+Enter a verb:
+screamed
+Enter a noun:
+pickup truck
+```
+
+次のテキストファイルが作成されます。
+
+```
+The silly panda walked to the chandelier and then screamed. A nearby pickup
+truck was unaffected by these events.
+```
+
+結果は画面に表示され、新しいテキストファイルに保存されます。
+
+## 正規表現の検索
+
+フォルダ内のすべての.txtファイルを開き、ユーザー指定の正規表現に一致する行を検索するプログラムを作成します。   
+結果はスクリーンに印刷する必要があります。
