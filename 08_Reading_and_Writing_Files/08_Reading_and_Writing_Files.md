@@ -757,6 +757,32 @@ Windowsを使用している場合は、次の内容のmcb.batという名前の
 また、ソースコードをプログラムに変更するたびに、誤って新しいバグが導入される危険性があります。   
 プログラムのデータをコードとは別の場所に格納することで、プログラムを他の人が使用しやすくし、バグに強いようにすることができます。
 
+
+-> 写経してみたが実行の方法がわからない＼(^o^)／   
+mcb.bak, mcb.dat, mcb.dir の3ファイルは作成される(サイズ0KB)のだけど、下記のようにしても動かない・・・・・・・・
+```
+# Usage: py.exe mcb.pyw save <keyword> - Saves clipboard to keyword.
+#        py.exe mcb.pyw <keyword> - Loads keyword to clipboard.
+#        py.exe mcb.pyw list - Loads all keywords to clipboard.
+```
+
+-> 直接pythonスクリプトを実行する方法だと実行できた。(付録Bのmcb.bat作成する方法でなく)  
+mcb.bak, mcb.dat, mcb.dir の3ファイルは「実行する場所」に作成されるみたい。  
+
+```
+# コマンドプロンプトにて
+> C:\Users\hoge\bin\python_scripts\mcb.bat save aaa
+-> "aaa" にクリップボードの内容が保存される。  
+カレントディレクトリ以下に、mcb.bak, mcb.dat, mcb.dirの3ファイルが作成される。
+
+> C:\Users\hoge\bin\python_scripts\mcb.bat aaa
+-> "aaa" で保存した内容がクリップボードにロードされる
+
+> C:\Users\hoge\bin\python_scripts\mcb.bat list
+-> ['aaa', 'bbb', 'ccc'] のかたちで、今までsaveしたキーワードがクリップボードにロードされる
+```
+
+
 # まとめ
 
 ファイルはフォルダ（ディレクトリとも呼ばれます）に編成され、パスはファイルの場所を示します。   
@@ -815,13 +841,7 @@ open（）関数は、ファイルを書き込みモードまたは追加モー�
 この章のmultlipboardプログラムを拡張し、delete <keyword>コマンドライン引数を使用して、シェルフからキーワードを削除します。   
 次に、すべてのキーワードを削除するdeleteコマンドライン引数を追加します。
 
--> 写経してみたが実行の方法がわからない＼(^o^)／   
-mcb.bak, mcb.dat, mcb.dir の3ファイルは作成される(サイズ0KB)のだけど、下記のようにしても動かない・・・・・・・・
-```
-# Usage: py.exe mcb.pyw save <keyword> - Saves clipboard to keyword.
-#        py.exe mcb.pyw <keyword> - Loads keyword to clipboard.
-#        py.exe mcb.pyw list - Loads all keywords to clipboard.
-```
+
 
 ## Mad Libs
 
