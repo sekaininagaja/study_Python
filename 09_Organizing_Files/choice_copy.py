@@ -19,5 +19,3 @@ for folder_name, subfolders, filenames in os.walk(source_dir):
             target_file = folder_name + '/' + filename
 #            print(target_file)
             shutil.copy(target_file, target_dir)
-
-# コピーする
