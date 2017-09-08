@@ -250,3 +250,90 @@ FILE INSIDE C:\delicious\walnut\waffles: butter.txt.
 os.walk()は、サブフォルダとファイル名変数の文字列のリストを返すので、これらのリストを独自のforループで使用することができます。   
 print()関数呼び出しを独自のカスタムコードで置き換えます。   
 （またはどちらか一方または両方が必要ない場合は、forループを削除してください）。
+
+# zipfileモジュールによるファイルの圧縮
+
+他の多くのファイルの圧縮された内容を保持できるZIPファイル（拡張子が.zipのファイル）に精通しているかもしれません。   
+ファイルを圧縮するとサイズが小さくなり、インターネット経由で転送するときに便利です。   
+また、ZIPファイルには複数のファイルとサブフォルダも含めることができるので、複数のファイルを1つにまとめる便利な方法です。   
+アーカイブファイルと呼ばれるこの1つのファイルは、例えば、電子メールに添付することができます。  
+あなたのPythonプログラムは、zipfileモジュール内の関数を使ってZIPファイルを作成したり開いたりすることができます。  
+
+## ZIPファイルの読み取り
+
+ZIPファイルの内容を読み込むには、まずZipFileオブジェクトを作成する必要があります（大文字のZとFに注意してください）。   
+ZipFileオブジェクトは、前章のopen()関数によって返されたFileオブジェクトと概念的に似ています。  
+これらは、プログラムがファイルとやり取りするときの値です。   
+ZipFileオブジェクトを作成するには、zipfile.ZipFile()関数を呼び出して、.zipファイルのファイル名の文字列を渡します。   
+zipfileはPythonモジュールの名前で、ZipFile()は関数の名前です。
+
+```python
+>>> import zipfile, os
+>>> os.chdir('C:\\')    # move to the folder with example.zip
+>>> exampleZip = zipfile.ZipFile('example.zip')
+>>> exampleZip.namelist()
+['spam.txt', 'cats/', 'cats/catnames.txt', 'cats/zophie.jpg']
+>>> spamInfo = exampleZip.getinfo('spam.txt')
+>>> spamInfo.file_size
+13908
+>>> spamInfo.compress_size
+3828
+
+# 元のファイルサイズを圧縮ファイルサイズで割ってexample.zipを圧縮する効率を計算し、％sでフォーマットされた文字列を使用してこの情報を出力する
+>>> 'Compressed file is %sx smaller!' % (round(spamInfo.file_size / spamInfo
+.compress_size, 2))
+'Compressed file is 3.63x smaller!'
+>>> exampleZip.close()
+```
+
+ZipFileオブジェクトには、ZIPファイルに含まれるすべてのファイルとフォルダの文字列のリストを返すnamelist()メソッドがあります。   
+これらの文字列は、getinfo()ZipFile メソッドに渡して、その特定のファイルに関するZipInfoオブジェクトを返すことができます。   
+ZipInfoオブジェクトには、それぞれ元のファイルサイズと圧縮ファイルサイズの整数を保持する file_sizeや compress_size などの独自の属性があります。   
+ZipFileオブジェクトはアーカイブファイル全体を表しますが、ZipInfoオブジェクトはアーカイブ内の単一ファイルに関する有益な情報を保持します。
+
+## ZIPファイルからの抽出
+
+ZipFileオブジェクトの extractall()メソッドは、すべてのファイルとフォルダをZIPファイルから現在の作業ディレクトリに抽出します。  
+
+このコードを実行すると、example.zip の内容が C:\ に抽出されます。   
+オプションで、現在の作業ディレクトリ以外のフォルダにファイルを展開するために、extractall() にフォルダ名を渡すことができます。  
+extractall()メソッドに渡されたフォルダが存在しない場合は作成されます。   
+たとえば、呼び出しを `exampleZip.extractall('C:\\delicious')` に置き換えた場合、コードは example.zip から新しく作成された C:\delicious フォルダにファイルを抽出します。
+
+ZipFileオブジェクトのextract()メソッドは、ZIPファイルから単一のファイルを抽出します。   
+インタラクティブシェルの例を続けます。
+
+```python
+>>> exampleZip.extract('spam.txt')
+'C:\\spam.txt'
+>>> exampleZip.extract('spam.txt', 'C:\\some\\new\\folders')
+'C:\\some\\new\\folders\\spam.txt'
+>>> exampleZip.close()
+```
+
+extract()に渡す文字列は、namelist()によって返されたリスト内の文字列のいずれかと一致しなければなりません。   
+必要に応じて、extract()に2番目の引数を渡して、ファイルを現在の作業ディレクトリ以外のフォルダに抽出することができます。   
+この2番目の引数がまだ存在しない場合、Pythonはそのフォルダを作成します。   
+extract()が返す値は、ファイルが抽出された絶対パスです。
+
+## ZIPファイルの作成と追加
+
+独自の圧縮ZIPファイルを作成するには、第2引数として 'w'を渡して、書き込みモードでZipFileオブジェクトを開く必要があります。   
+（これは、open（）関数に 'w'を渡してテキストファイルを書込みモードで開くのと同じです。）
+
+ZipFileオブジェクトの write（）メソッドにパスを渡すと、Pythonはそのパスのファイルを圧縮し、ZIPファイルに追加します。   
+write（）メソッドの最初の引数は、追加するファイル名の文字列です。   
+2番目の引数は圧縮タイプのパラメータで、ファイルを圧縮するためにどのアルゴリズムを使うべきかをコンピュータに指示します。   
+この値を常にzipfile.ZIP_DEFLATEDに設定することができます。   
+（これは、すべてのタイプのデータでうまく動作するデフレート圧縮アルゴリズムを指定します。）
+
+```python
+>>> import zipfile
+>>> newZip = zipfile.ZipFile('new.zip', 'w')
+>>> newZip.write('spam.txt', compress_type=zipfile.ZIP_DEFLATED)
+>>> newZip.close()
+```
+
+このコードはspam.txtの圧縮された内容を持つnew.zipという名前の新しいZIPファイルを作成します。  
+ファイルへの書き込みと同様に、書き込みモードはZIPファイルの既存の内容をすべて消去します。   
+既存のZIPファイルにファイルを追加するだけの場合は、zipfile.ZipFile() に2番目の引数として 'a'を渡して、追加モードでZIPファイルを開きます。
