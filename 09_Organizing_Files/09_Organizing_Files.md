@@ -548,11 +548,32 @@ osとshutilのファイル処理機能と組み合わせることで、zipfile�
 フォルダツリーを走査して特定のファイル拡張子（.pdfや.jpgなど）を持つファイルを検索するプログラムを作成します。   
 これらのファイルを、それらが入っている場所から新しいフォルダにコピーします。
 
+-> choice_copy.py  
+拡張子を扱える `endswith` メソッドを知った。   
+`for filename in filenames:` で全ファイル精査していくとき、対象ディレクトリ以下が含まれるようなディレクトリ構成の場合うまくいかないので対象ディレクトリをはずすような条件をつけた。
+
+```python
+# /path/to/source_dir 以下の特定ファイルを
+# /path/to/source_dir/target_dir にコピーするようなディレクトリ構成の場合、target_dirを除外する
+
+for filename in filenames:
+    if filename.endswith(extension) and folder_name != target_dir:
+```
 
 ## 不要なファイルの削除
 フォルダツリーを通って非常に大きなファイルやフォルダ（ファイルサイズが100MBを超えるものなど）を検索するプログラムを作成します。   
 （ファイルのサイズを取得するには、osモジュールのos.path.getsize（）を使用することを忘れないでください）。  
 これらのファイルは絶対パスで画面に表示してください。
+
+-> du.py  
+バイト数で指定している。KBとかGBで指定したい。  
+表示もKBとかGBとかわかりやすくやりたい。これだったらduコマンド使ってしまうよ・・・  
+```python
+size = 10000 <-- 数値で指定する
+
+filesize = os.path.getsize(filepath)
+    if size < filesize:  <-- sizeを数値で指定していないとここの比較でエラーになる
+```
 
 ## ギャップを埋める
 
