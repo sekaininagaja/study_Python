@@ -585,16 +585,16 @@ spam001.txt、spam002.txtなどの特定の接頭辞を持つすべてのファ�
 -> 3-1: このギャップを閉じるために、後のすべてのファイルの名前をプログラムに変更させます
 
 ```bash
-# スクリプト実行前
+# gap_rename.py 実行前
 $ ls -la /tmp/test/
 total 16
-drwxr-xr-x  5 eri   wheel  170  9 10 22:28 .
+drwxr-xr-x  5 hoge   wheel  170  9 10 22:28 .
 drwxrwxrwt  8 root  wheel  272  9 10 22:28 ..
--rw-r--r--  1 eri   wheel    0  9 10 22:28 sample000.txt
--rw-r--r--  1 eri   wheel   48  9 10 22:28 sample002.txt
--rw-r--r--  1 eri   wheel   48  9 10 22:28 sample005.txt
+-rw-r--r--  1 hoge   wheel    0  9 10 22:28 sample000.txt
+-rw-r--r--  1 hoge   wheel   48  9 10 22:28 sample002.txt
+-rw-r--r--  1 hoge   wheel   48  9 10 22:28 sample005.txt
 
-# スクリプト実行
+# gap_rename.py 実行
 $ python gap_rename.py
 ===sample001.txt===
 リネームする対象: /tmp/test/sample000.txt
@@ -605,12 +605,108 @@ $ python gap_rename.py
 リネームする対象: /tmp/test/sample005.txt
 リネーム後の名称: /tmp/test/sample003.txt
 
-# スクリプト実行後
+# gap_rename.py 実行後
 $ ls -la /tmp/test/
 total 16
-drwxr-xr-x  5 eri   wheel  170  9 10 22:29 .
+drwxr-xr-x  5 hoge   wheel  170  9 10 22:29 .
 drwxrwxrwt  8 root  wheel  272  9 10 22:28 ..
--rw-r--r--  1 eri   wheel    0  9 10 22:28 sample001.txt
--rw-r--r--  1 eri   wheel   48  9 10 22:28 sample002.txt
--rw-r--r--  1 eri   wheel   48  9 10 22:28 sample003.txt
+-rw-r--r--  1 hoge   wheel    0  9 10 22:28 sample001.txt
+-rw-r--r--  1 hoge   wheel   48  9 10 22:28 sample002.txt
+-rw-r--r--  1 hoge   wheel   48  9 10 22:28 sample003.txt
+```
+
+-> 3-2: 追加の課題として、番号の付いたファイルにギャップを挿入して新しいファイルを追加できる別のプログラムを作成します。  
+ネットでみつけたゼロパディングの方法が参考になった。  
+あと何もしない場合には「pass」を明確に書くというのも勉強になった。
+
+```bash
+# gap_touch.py 実行前
+$ ls -la /tmp/test/
+total 40
+drwxr-xr-x  10 hoge   wheel  340  9 10 22:50 .
+drwxrwxrwt   8 root  wheel  272  9 10 22:49 ..
+-rw-r--r--   1 hoge   wheel   48  9 10 22:49 sample001.txt
+-rw-r--r--   1 hoge   wheel   48  9 10 22:49 sample002.txt
+-rw-r--r--   1 hoge   wheel   48  9 10 22:49 sample003.txt
+-rw-r--r--   1 hoge   wheel   48  9 10 22:49 sample004.txt
+-rw-r--r--   1 hoge   wheel   48  9 10 22:49 sample005.txt
+-rw-r--r--   1 hoge   wheel    0  9 10 22:50 sample010.txt
+-rw-r--r--   1 hoge   wheel    0  9 10 22:50 sample022.txt
+-rw-r--r--   1 hoge   wheel    0  9 10 22:50 source.txt
+
+# gap_touch.py 実行
+$ python gap_touch.py
+===sample001.txt===
+すでに存在しています
+===sample002.txt===
+すでに存在しています
+===sample003.txt===
+すでに存在しています
+===sample004.txt===
+すでに存在しています
+===sample005.txt===
+すでに存在しています
+===sample006.txt===
+作成するファイル名: /tmp/test/sample006.txt
+===sample007.txt===
+作成するファイル名: /tmp/test/sample007.txt
+===sample008.txt===
+作成するファイル名: /tmp/test/sample008.txt
+===sample009.txt===
+作成するファイル名: /tmp/test/sample009.txt
+===sample010.txt===
+すでに存在しています
+===sample011.txt===
+作成するファイル名: /tmp/test/sample011.txt
+===sample012.txt===
+作成するファイル名: /tmp/test/sample012.txt
+===sample013.txt===
+作成するファイル名: /tmp/test/sample013.txt
+===sample014.txt===
+作成するファイル名: /tmp/test/sample014.txt
+===sample015.txt===
+作成するファイル名: /tmp/test/sample015.txt
+===sample016.txt===
+作成するファイル名: /tmp/test/sample016.txt
+===sample017.txt===
+作成するファイル名: /tmp/test/sample017.txt
+===sample018.txt===
+作成するファイル名: /tmp/test/sample018.txt
+===sample019.txt===
+作成するファイル名: /tmp/test/sample019.txt
+===sample020.txt===
+作成するファイル名: /tmp/test/sample020.txt
+===sample021.txt===
+作成するファイル名: /tmp/test/sample021.txt
+===sample022.txt===
+すでに存在しています
+
+# gap_touch.py 実行後
+$ ls -la /tmp/test/
+total 40
+drwxr-xr-x  25 hoge   wheel  850  9 10 23:06 .
+drwxrwxrwt   8 root  wheel  272  9 10 22:49 ..
+-rw-r--r--   1 hoge   wheel   48  9 10 22:49 sample001.txt
+-rw-r--r--   1 hoge   wheel   48  9 10 22:49 sample002.txt
+-rw-r--r--   1 hoge   wheel   48  9 10 22:49 sample003.txt
+-rw-r--r--   1 hoge   wheel   48  9 10 22:49 sample004.txt
+-rw-r--r--   1 hoge   wheel   48  9 10 22:49 sample005.txt
+-rw-r--r--   1 hoge   wheel    0  9 10 23:06 sample006.txt
+-rw-r--r--   1 hoge   wheel    0  9 10 23:06 sample007.txt
+-rw-r--r--   1 hoge   wheel    0  9 10 23:06 sample008.txt
+-rw-r--r--   1 hoge   wheel    0  9 10 23:06 sample009.txt
+-rw-r--r--   1 hoge   wheel    0  9 10 22:50 sample010.txt
+-rw-r--r--   1 hoge   wheel    0  9 10 23:06 sample011.txt
+-rw-r--r--   1 hoge   wheel    0  9 10 23:06 sample012.txt
+-rw-r--r--   1 hoge   wheel    0  9 10 23:06 sample013.txt
+-rw-r--r--   1 hoge   wheel    0  9 10 23:06 sample014.txt
+-rw-r--r--   1 hoge   wheel    0  9 10 23:06 sample015.txt
+-rw-r--r--   1 hoge   wheel    0  9 10 23:06 sample016.txt
+-rw-r--r--   1 hoge   wheel    0  9 10 23:06 sample017.txt
+-rw-r--r--   1 hoge   wheel    0  9 10 23:06 sample018.txt
+-rw-r--r--   1 hoge   wheel    0  9 10 23:06 sample019.txt
+-rw-r--r--   1 hoge   wheel    0  9 10 23:06 sample020.txt
+-rw-r--r--   1 hoge   wheel    0  9 10 23:06 sample021.txt
+-rw-r--r--   1 hoge   wheel    0  9 10 22:50 sample022.txt
+-rw-r--r--   1 hoge   wheel    0  9 10 22:50 source.txt
 ```
