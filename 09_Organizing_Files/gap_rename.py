@@ -6,7 +6,7 @@
 
 import os, shutil, re
 
-target_dir = '/Users/eri/Qsync/study/study_python/09_Organizing_Files/test'
+target_dir = '/tmp/test'
 target_file_list = []
 
 for foldername, subfolders, filenames in os.walk(target_dir):
