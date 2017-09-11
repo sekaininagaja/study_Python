@@ -74,3 +74,74 @@ An exception happened: Symbol must be a single character string.
 ```
 
 tryおよびexceptステートメントを使用すると、プログラム全体がクラッシュするのではなく、エラーをより適切に処理できます。
+
+
+# トレースバックを文字列として取得する
+
+Pythonがエラーに遭遇すると、トレースバックと呼ばれる宝くじ情報が生成されます。   
+トレースバックには、エラーメッセージ、エラーの原因となった行の行番号、およびエラーを引き起こした関数呼び出しのシーケンスが含まれます。   
+この一連の呼び出しは呼び出しスタックと呼ばれます。
+
+```python
+# errorExample.py
+def spam():
+    bacon()
+def bacon():
+    raise Exception('This is the error message.')
+
+spam()
+```
+
+errorExample.pyを実行すると、出力は次のようになります。
+
+```python
+Traceback (most recent call last):
+  File "errorExample.py", line 7, in <module>
+    spam()
+  File "errorExample.py", line 2, in spam
+    bacon()
+  File "errorExample.py", line 5, in bacon
+    raise Exception('This is the error message.')
+Exception: This is the error message.
+```
+
+トレースバックをたどると、エラーが 5行目のbacon()関数の中で、に起こったことがわかります。   
+この特定のbacon()呼び出しは、2行目のspam()関数から呼び出され、7行目で呼び出されました。  
+複数の場所から関数を呼び出すことができるプログラムでは、コールスタックは、どのコールがエラーにつながったかを判断するのに役立ちます。
+
+```
+(1) 7行目 spam() でエラー
+(2) 2行目 bacon() でエラー
+(3) 5行目 「raise Exception('This is the error message.')」  <-- これが呼び出されたから！
+```
+
+トレースバックは、発生した例外が処理されなくなるたびにPythonによって表示されます。   
+しかし、traceback.format_exc()を呼び出すことで文字列として取得することもできます。   
+この関数は、例外のトレースバックから情報を取得するだけでなく、例外を正常に処理するためにexceptステートメントを使用する場合に便利です。   
+この関数を呼び出す前に、Pythonのトレースバックモジュールをインポートする必要があります。
+
+たとえば、例外が発生したときにプログラムをクラッシュさせる代わりに、トレースバック情報をログファイルに書き込んでプログラムを実行し続けることができます。   
+プログラムをデバッグする準備ができたら、後でログファイルを見ることができます。   
+
+```python
+>>> import traceback
+>>> try:
+         raise Exception('This is the error message.')
+except:
+         errorFile = open('errorInfo.txt', 'w')
+         errorFile.write(traceback.format_exc())
+         errorFile.close()
+         print('The traceback info was written to errorInfo.txt.')
+
+116
+The traceback info was written to errorInfo.txt.
+```
+
+116は、ファイルに116文字が書き込まれたため、write（）メソッドからの戻り値です。   
+トレースバックテキストはerrorInfo.txtに書き込まれました。
+
+```
+Traceback (most recent call last):
+  File "<pyshell#28>", line 2, in <module>
+Exception: This is the error message.
+```
