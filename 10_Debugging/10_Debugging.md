@@ -683,3 +683,12 @@ logging.basicConfig(filename='programLog.txt', level=logging.DEBUG, format=' %(a
 
 12. How do you set a breakpoint on a line of code in IDLE?
 - ブレークポイントを設定したいコード行で右クリックし、[Set Breakpoint]する
+
+# 練習プロジェクト
+
+## コイントスのデバッグ
+
+以下のプログラムは、簡単なコイントスの推測ゲームを意図しています。   
+プレイヤーは2つの推測を得ます（それは簡単なゲームです）。   
+しかし、プログラムにはいくつかのバグがあります。   
+プログラムを数回実行して、プログラムが正常に動作しないようにするバグを見つけます。
