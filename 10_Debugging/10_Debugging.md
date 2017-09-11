@@ -256,3 +256,180 @@ Traceback (most recent call last):
 アサーションは開発用であり、最終製品用ではありません。   
 プログラムを他の人に渡して実行するまでには、バグがなく、正当性チェックを必要としません。   
 `-O` オプションを使用して、おそらくあまり意味のないプログラムを起動する方法の詳細については、付録Bを参照してください。
+
+
+# ロギング
+
+プログラムの実行中にprint()ステートメントをコードに出力して変数の値を出力したことがある場合は、コードのデバッグにロギングのフォームを使用しています。   
+ロギングは、プログラム内で何が起きているのか、起きている順番を理解するのに最適です。   
+Pythonのロギングモジュールを使用すると、作成するカスタムメッセージのレコードを簡単に作成できます。   
+これらのログメッセージは、プログラムの実行がロギング機能コールに達した時点を記述し、その時点で指定した変数をリストします。   
+一方、欠落したログメッセージは、コードの一部がスキップされて実行されなかったことを示します。
+
+## ロギングモジュールの使用
+
+プログラムの実行中にロギングモジュールが画面にログメッセージを表示できるようにするには、プログラムの先頭に次の行をコピーします（**#!python シバン行の直下**）。
+
+```
+import logging
+logging.basicConfig(level=logging.DEBUG, format=' %(asctime)s - %(levelname)s
+- %(message)s')
+```
+
+どのように動作するか心配する必要はありませんが、基本的に、Pythonがイベントを記録するとき、そのイベントに関する情報を保持するLogRecordオブジェクトを作成します。   
+ロギングモジュールのbasicConfig（）関数を使用すると、表示するLogRecordオブジェクトの詳細とその詳細をどのように表示するかを指定できます。
+
+数値の階乗を計算する関数を書いたとします。   
+数学では、階乗4 は 1×2×3×4、つまり24です。  
+階数7は1×2×3×4×5×6×7、つまり5,040です。   
+
+新しいファイルエディタウィンドウを開き、次のコードを入力します。   
+それにはバグがありますが、間違っていることを理解するのに役立ついくつかのログメッセージも入力します。  
+
+ここでは、ログ情報を出力するときにlogging.debug（）関数を使用します。   
+このdebug（）関数はbasicConfig（）を呼び出し、一連の情報が出力されます。   
+この情報は、basicConfig（）で指定したフォーマットであり、debug（）に渡したメッセージを含みます。   
+print（factorial（5））呼び出しは元のプログラムの一部であるため、ロギングメッセージが無効になっていても結果が表示されます。
+
+このプログラムの出力は次のようになります。
+
+```python
+2017-09-11 17:06:13,236 - DEBUG - Start of program
+2017-09-11 17:06:13,237 - DEBUG - Start of dactorial(5)
+2017-09-11 17:06:13,237 - DEBUG - i is 0, total is 0
+2017-09-11 17:06:13,248 - DEBUG - i is 1, total is 0
+2017-09-11 17:06:13,250 - DEBUG - i is 2, total is 0
+2017-09-11 17:06:13,252 - DEBUG - i is 3, total is 0
+2017-09-11 17:06:13,256 - DEBUG - i is 4, total is 0
+2017-09-11 17:06:13,258 - DEBUG - i is 5, total is 0
+2017-09-11 17:06:13,262 - DEBUG - End of factorial(5)
+0
+2017-09-11 17:06:13,267 - DEBUG - End of program
+```
+
+factorial（）関数は5の階乗として0を返しますが、これは正しくありません。   
+forループは、合計値に1から5までの数字を掛けなければなりません。しかし、logging.debug（）によって表示されるログメッセージは、i変数が1ではなく0から始まっていることを示しています。   
+反復の残りの部分もまた、合計のために間違った値を持つ。   
+ログメッセージには、いつブレッドクラムがあるのかが分かります。
+
+範囲（n + 1）内のfor iを範囲（1, n + 1）内のiに対して変更して実行する。  
+
+```python
+2017-09-11 17:09:34,592 - DEBUG - Start of program
+2017-09-11 17:09:34,592 - DEBUG - Start of dactorial(5)
+2017-09-11 17:09:34,593 - DEBUG - i is 1, total is 1
+2017-09-11 17:09:34,598 - DEBUG - i is 2, total is 2
+2017-09-11 17:09:34,600 - DEBUG - i is 3, total is 6
+2017-09-11 17:09:34,605 - DEBUG - i is 4, total is 24
+2017-09-11 17:09:34,607 - DEBUG - i is 5, total is 120
+2017-09-11 17:09:34,612 - DEBUG - End of factorial(5)
+120
+2017-09-11 17:09:34,616 - DEBUG - End of program
+```
+
+factorial(5) 呼び出しは正しい値(120)を返します。  
+ログメッセージはループ内で何が起こっているのかを示し、これはバグに直結しています。
+logging.debug（）呼び出しは、渡された文字列だけでなく、タイムスタンプとDEBUGという単語も出力することがわかります。
+
+## print() でデバッグしないでください
+
+`import logging` と `logging.basicConfig(level=logging.DEBUG, format= '%(asctime)s - %(levelname)s - %(message)s')` を入力するのはやや面倒です。   
+代わりにprint（）を使用したいかもしれませんが、この誘惑には気をつけてください！   
+デバッグが完了すると、各ログメッセージのコードからprint（）呼び出しを削除するのに多くの時間を費やします。   
+必要なprint（）呼び出しを誤って削除することさえあります。   
+ログメッセージについての良い点は、あなたが好きなだけ多くのプログラムを自由に書き込めることです。  
+また、1つの `logging.disable(logging.CRITICAL)` コールを追加することで、いつでも無効にすることができます。   
+print（）とは異なり、ログモジュールはログメッセージの表示と非表示を簡単に切り替えることができます。
+
+ログメッセージは、ユーザではなくプログラマを対象としています。   
+ユーザーは、デバッグに役立ついくつかの辞書値の内容を気にしません。   
+そのようなもののためにログメッセージを使用してください。   
+File not found や Invalid input のように、ユーザが見たいと思うメッセージについては、あなたはprint（）コールを使うべきです。    
+ログメッセージを無効にした後に、有用な情報をユーザーに提供したくないことは避けてください。
+
+
+## ロギングレベル
+
+ロギングレベルは、重要度別にログメッセージを分類する方法を提供します。   
+下記のとおり、5つのログレベルがあります。   
+メッセージは、異なるロギング機能を使用して各レベルでログに記録できます。
+
+- DEBUG : logging.debug()
+  - 最低レベル。 小さな細部に使用されます。 通常は、問題を診断する場合にのみこれらのメッセージを気にします。
+- INFO : logging.info()
+  - プログラムの一般的な出来事に関する情報を記録したり、プログラム内のその時点で動作していることを確認するために使用されます。
+- WARNING : logging.warning()
+  - プログラムの動作を妨げない潜在的な問題を示すために使用されますが、将来的にはそうする可能性があります。
+- ERROR : logging.error()
+  - プログラムが何かをしなかった原因となったエラーを記録するために使用されます。
+- CRITICAL : logging.critical()
+  - 最高レベル。 プログラムの実行を完全に停止させる原因となった、またはその原因となる致命的なエラーを示すために使用されます。
+
+  ロギングメッセージは、これらの関数に文字列として渡されます。   
+  ログレベルは推奨値です。   
+  結局のところ、あなたのログメッセージがどのカテゴリーに入るかはあなた次第です。
+
+```python
+>>> import logging
+>>> logging.basicConfig(level=logging.DEBUG, format=' %(asctime)s -
+%(levelname)s - %(message)s')
+>>> logging.debug('Some debugging details.')
+2015-05-18 19:04:26,901 - DEBUG - Some debugging details.
+>>> logging.info('The logging module is working.')
+2015-05-18 19:04:35,569 - INFO - The logging module is working.
+>>> logging.warning('An error message is about to be logged.')
+2015-05-18 19:04:56,843 - WARNING - An error message is about to be logged.
+>>> logging.error('An error has occurred.')
+2015-05-18 19:05:07,737 - ERROR - An error has occurred.
+>>> logging.critical('The program is unable to recover!')
+2015-05-18 19:05:45,794 - CRITICAL - The program is unable to recover!
+```
+
+ロギングレベルの利点は、表示するロギングメッセージの優先順位を変更できることです。   
+basicConfig（）関数のlevelキーワード引数にlogging.DEBUGを渡すと、すべてのログレベル（DEBUGが最低レベル）からのメッセージが表示されます。   
+しかし、プログラムをもう少し開発した後は、エラーだけに興味があるかもしれません。   
+その場合、basicConfig（）のレベル引数をlogging.ERRORに設定できます。   
+これにより、ERRORおよびCRITICALメッセージのみが表示され、DEBUG、INFO、およびWARNINGメッセージはスキップされます。
+
+## ロギングの無効化
+
+あなたのプログラムをデバッグした後は、おそらく、これらのログメッセージがすべてスクリーンに乱雑にならないようにする必要があります。   
+logging.disable（）関数はこれらを無効にするので、プログラムに入ってすべてのログ呼び出しを手作業で削除する必要はありません。   
+単にlogging.disable（）にログレベルを渡すと、そのレベル以下のすべてのログメッセージが表示されなくなります。 したがって、ロギングを完全に無効にしたい場合は、logging.disable（logging.CRITICAL）をプログラムに追加してください。   
+たとえば、対話型シェルに次のように入力します。
+
+```python
+>>> import logging
+>>> logging.basicConfig(level=logging.INFO, format=' %(asctime)s -
+%(levelname)s - %(message)s')
+
+# disableにする前
+>>> logging.critical('Critical error! Critical error!')
+2015-05-22 11:10:48,054 - CRITICAL - Critical error! Critical error!
+
+# disableにする
+>>> logging.disable(logging.CRITICAL)
+
+# disableにしたあと。メッセージは出なくなった。
+>>> logging.critical('Critical error! Critical error!')
+>>> logging.error('Error! Error!')
+```
+
+logging.disable（）はそれ以降のすべてのメッセージを無効にするので、`import logging` 行の近くにそれを追加するといいかんじです。  
+必要に応じてロギングメッセージを有効または無効にするために、その呼び出しをコメントアウトまたはコメント解除することが容易にわかります。
+
+## ファイルへのロギング
+
+ログメッセージを画面に表示する代わりに、テキストファイルに書き込むことができます。   
+logging.basicConfig（）関数はfilenameキーワード引数をとります：
+
+```python
+import logging
+logging.basicConfig(filename='myProgramLog.txt', level=logging.DEBUG, format='
+%(asctime)s - %(levelname)s - %(message)s')
+```
+
+ログメッセージはmyProgramLog.txtに保存されます。   
+ロギングメッセージは役立ちますが、画面が乱雑になり、プログラムの出力を読みにくくなる可能性があります。   
+ロギングメッセージをファイルに書き込むと、画面をクリアしたままにしておき、プログラムを実行した後で読むことができます。   
+このテキストファイルは、メモ帳やテキストエディットなどのテキストエディタで開くことができます。
