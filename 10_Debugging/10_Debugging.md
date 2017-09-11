@@ -145,3 +145,114 @@ Traceback (most recent call last):
   File "<pyshell#28>", line 2, in <module>
 Exception: This is the error message.
 ```
+
+# アサーション
+
+アサーションは、あなたのコードが間違って何かを間違って実行していないことを確認する健全性チェックです。   
+これらのサニティ(正常性)チェックは、アサート文によって実行されます。   
+サニティチェックが失敗すると、AssertionError例外が発生します。   
+コードでは、assert文は次の要素で構成されます。
+
+- assertキーワード
+- 条件（TrueまたはFalseで評価される式）
+- コンマ
+- 条件がFalseの場合に表示する文字列
+
+```python
+>>> podBayDoorStatus = 'open'
+>>> assert podBayDoorStatus == 'open', 'The pod bay doors need to be "open".'
+>>> podBayDoorStatus = 'I\'m sorry, Dave. I\'m afraid I can\'t do that.'
+>>> assert podBayDoorStatus == 'open', 'The pod bay doors need to be "open".'
+Traceback (most recent call last):
+  File "<pyshell#10>", line 1, in <module>
+    assert podBayDoorStatus == 'open', 'The pod bay doors need to be "open".'
+AssertionError: The pod bay doors need to be "open".
+```
+
+ここでは podBayDoorStatusを 'open'に設定しました。  
+これからは、この変数の値が 'open'になることを完全に期待しています。   
+この変数を使用するプログラムでは、期待どおりに動作するためには、その値が「開かれている」ことに依存する「開かれた」コードであるという前提で、多くのコードを書いているかもしれません。   
+そこで、podBayDoorStatusが 'open'であると仮定するようにアサーションを追加します。   
+ここでは、「ポッドベイのドアを開く必要があります」というメッセージが含まれています。   
+アサーションが失敗した場合、何が間違っているかを簡単に確認できます。
+
+後で、podBayDoorStatusに別の値を割り当てる間違いを間違えているが、多くのコード行には気づかないと言う。   
+アサーションはこのミスをキャッチし、何が間違っているかを明確に伝えます。
+
+普通の英語では、assertステートメントは「この条件が成り立つと主張し、そうでなければプログラムのどこかにバグがあります」と述べています。  
+例外とは異なり、tryやexceptを使ってアサートステートメントを処理するべきではありません。   
+アサーションが失敗した場合、プログラムはクラッシュするはずです。   
+このように速く失敗することで、バグの元の原因と最初にバグに気付く時期との間の時間が短くなります。   
+これにより、バグの原因となっているコードを見つける前にチェックする必要があるコードの量が減ります。
+
+アサーションはプログラマのエラーであり、ユーザのエラーではありません。   
+復旧可能なエラー（ファイルが見つからない、またはユーザーが無効なデータを入力するなど）に対しては、assert文で検出するのではなく、例外を発生させます。
+
+## 信号機シミュレーションでのアサーションの使用
+
+交通信号シミュレーションプログラムを構築しているとします。   
+交差点のストップライトを表すデータ構造は、南北に面したストップライトと東西に面したキーである 'ns'と 'ew'を持つ辞書です。   
+これらのキーの値は、 'green', ' yellow', 'red' のいずれかになります。   
+コードは次のようになります。
+
+これらの2つの変数は、Market Streetと2nd Street、Mission Streetと16th Streetの交差点をあらわします。  
+プロジェクトを開始するには、switchLights()関数を記述します。  
+この関数は、交差点辞書を引数として取り、ライトを切り替えます。
+
+最初は、switchLights（）は、各ライトをシーケンス内の次の色に切り替える必要があると考えるかもしれません。  
+「緑」の値は「黄」に、「黄」の値は「赤」に、 値は「緑色」に変わります。   
+このアイデアを実装するコードは次のようになります。
+
+```python
+market_2nd = {'ns': 'green', 'ew': 'red'}
+mission_16th = {'ns': 'red', 'ew': 'green'}
+
+def switchLights(stoplight):
+    for key in stoplight.keys():
+        if stoplight[key] == 'green':
+            stoplight[key] = 'yellow'
+        elif stoplight[key] == 'yellow':
+            stoplight[key] = 'red'
+        elif stoplight[key] == 'red':
+            stoplight[key] = 'green'
+
+switchLights(market_2nd)
+```
+
+このコードではすでに問題が発生しているかもしれませんが、数千行の長いシミュレーションコードを気付かずに書いたふりをしましょう。   
+最終的にシミュレーションを実行すると、プログラムはクラッシュしませんが、あなたのバーチャルカーは大破します！
+
+既にプログラムの残りの部分を書いているので、バグがどこにあるのか分かりません。   
+たぶんそれは、車をシミュレートするコードまたは仮想ドライバをシミュレートするコードにあります。   
+バグをswitchLights（）関数にトレースするのに数時間かかることがあります。
+
+しかし、switchLights（）を書くときに、少なくとも1つのライトが常に赤であることを確認するアサーションを関数の一番下に追加してあった場合・・・
+
+```
+assert 'red' in stoplight.values(), 'Neither light is red! ' + str(stoplight)
+```
+
+このアサーションが適切に設定されていると、プログラムがクラッシュし、次のエラーメッセージが表示されます。
+
+```python
+Traceback (most recent call last):
+  File "carSim.py", line 14, in <module>
+    switchLights(market_2nd)
+  File "carSim.py", line 13, in switchLights
+    assert 'red' in stoplight.values(), 'Neither light is red! ' + str(stoplight)
+❶ AssertionError: Neither light is red! {'ns': 'yellow', 'ew': 'green'}
+```
+
+ここで重要なのはAssertionError❶です。   
+あなたのプログラムがクラッシュするのは理想的ではありませんが、ただちに健全性チェックが失敗したことを指摘します。  
+どちらの方向も赤信号ではありません。   
+プログラムの実行の早い段階で失敗することで、将来の多くのデバッグ作業を自分で省くことができます。
+
+
+## アサーションの無効化
+
+アサーションは、Pythonの実行時に  `-O` オプションを渡すことで無効にすることができます。   
+これは、プログラムの作成とテストが終了し、サニティチェックを実行して速度を落とさないようにしたい場合に便利です（ほとんどの場合、assert文は速度の差が目立たない）。   
+アサーションは開発用であり、最終製品用ではありません。   
+プログラムを他の人に渡して実行するまでには、バグがなく、正当性チェックを必要としません。   
+`-O` オプションを使用して、おそらくあまり意味のないプログラムを起動する方法の詳細については、付録Bを参照してください。
