@@ -595,3 +595,91 @@ Go、Over、Step、またはOutをクリックすると、通常通り続行で�
 
 これらのデバッグツールとテクニックは、動作するプログラムを書くのに役立ちます。   
 誤ってコードにバグを導入することは、何年ものコーディング経験を持っていても、事実です。
+
+# 練習問題
+
+1. Write an assert statement that triggers an AssertionError if the variable spam is an integer less than 10.
+- 10より小さい場合はNG => 10以上ならTrue
+- assert spam >= 10, 'spam が 10 より小さい値です。'
+
+```
+# OK
+>>> spam = 12
+>>> assert spam >= 10, 'spam が 10 より小さい値です。'
+>>> spam = 10
+>>> assert spam >= 10, 'spam が 10 より小さい値です。'
+
+# NG
+>>> spam = 9
+>>> assert spam >= 10, 'spam が 10 より小さい値です。'
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+AssertionError: spam が 10 より小さい値です。
+```
+
+2. Write an assert statement that triggers an AssertionError if the variables eggs and bacon contain strings that are the same as each other, even if their cases are different (that is, 'hello' and 'hello' are considered the same, and 'goodbye' and 'GOODbye' are also considered the same).
+- 大文字小文字に関わらず中身が同じならTrue。
+- assert egg.upper() == bacon.upper(), 'egg と bacon の中身がちがいます'
+
+```python
+# OK
+>>> egg = 'hello'
+>>> bacon = 'HELLO'
+>>> assert egg.upper() == bacon.upper(), 'egg と bacon の中身がちがいます'
+
+# NG
+>>> egg = 'bye'
+>>> assert egg.upper() == bacon.upper(), 'egg と bacon の中身がちがいます'
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+AssertionError: egg と bacon の中身がちがいます
+```
+3. Write an assert statement that always triggers an AssertionError.
+- 永遠に True にならなければいいってこと？？
+- assert False, 'EROOOOOOOOOOR!!!'
+
+```
+>>> assert False, 'EROOOOOOOOOOR!!!'
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+AssertionError: EROOOOOOOOOOR!!!
+```
+
+4. What are the two lines that your program must have in order to be able to call logging.debug()?
+```
+import logging
+logging.basicConfig(level=logging.DEBUG, format=' %(asctime)s - %(levelname)s - %(message)s')
+```
+
+5. What are the two lines that your program must have in order to have logging.debug() send a logging message to a file named programLog.txt?
+```
+import logging
+logging.basicConfig(filename='programLog.txt', level=logging.DEBUG, format=' %(asctime)s - %(levelname)s - %(message)s')
+```
+
+6. What are the five logging levels?
+- DEBUG
+- INFO
+- WARNING
+- ERROR
+- CRITICAL
+
+7. What line of code can you add to disable all logging messages in your program?
+- logging.disable(logging.CRITICAL)
+
+8. Why is using logging messages better than using print() to display the same message?
+- print() によるデバッグだと必要なくなったときに手動で消していかないといけない。
+- loggingモジュールを使うと、簡単にログの有効化・無効化が可能
+
+9. What are the differences between the Step, Over, and Out buttons in the Debug Control window?
+- Step: コードを1行ずつ実行していく。コード行が関数呼び出しの場合はその関数の一番始めの行に「ステップイン」する（関数も1行ずつ実行していく）
+- Over: Stepと同様にコードを1行ずつ実行していくが、コード行が関数呼び出しの場合は「ステップオーバー」する（関数は1行ずつ実行していかない）
+
+10. After you click Go in the Debug Control window, when will the debugger stop?
+- プログラムが終了するか、ブレークポイントに到達したら止まる
+
+11. What is a breakpoint?
+- 特定のコード行にブレークポイントを設定し、コードがその行に到達するとデバッガーは処理を一時停止する
+
+12. How do you set a breakpoint on a line of code in IDLE?
+- ブレークポイントを設定したいコード行で右クリックし、[Set Breakpoint]する
