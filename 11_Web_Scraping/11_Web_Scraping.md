@@ -131,3 +131,67 @@ Webからダウンロードする必要がある場合は、requests モジュ�
 ```python
 >>> import requests
 ```
+
+## requests.get()関数を使用したWebページのダウンロード
+
+requests.get() 関数はダウンロードするURLの文字列を受け取ります。   
+requests.get()の戻り値でtype()を呼び出すと、リクエストに応じてWebサーバーから渡されたレスポンスを含むResponseオブジェクトが返されることがわかります。   
+レスポンスオブジェクトについては後で詳しく説明しますが、今のところコンピュータがインターネットに接続されている間は、対話型シェルに次のように入力します。
+
+```python
+>>> import requests
+>>> res = requests.get('https://automatetheboringstuff.com/files/rj.txt')
+>>> type(res)
+<class 'requests.models.Response'>
+❶ >>> res.status_code == requests.codes.ok
+True
+>>> len(res.text)
+178981
+>>> print(res.text[:250])
+The Project Gutenberg EBook of Romeo and Juliet, by William Shakespeare
+
+This eBook is for the use of anyone anywhere at no cost and with
+almost no restrictions whatsoever. You may copy it, give it away or
+re-use it under the terms of the Proje
+```
+
+URLは、ロメオとジュリエットの全プレイのテキストWebページに移動します。   
+Responseオブジェクトのstatus_code属性をチェックすることによって、このWebページのリクエストが成功したことがわかります。   
+それがrequests.codes.okの値と等しい場合は、すべてがうまくいった。   
+（ちなみに、HTTPプロトコルの「OK」のステータスコードは200です。「Not Found」の404ステータスコードにはすでに慣れているかもしれません）  
+
+## エラーのチェック
+
+これまで見てきたように、Responseオブジェクトには、ダウンロードが成功したかどうかを確認するために、requests.codes.okに対して確認できるstatus_code属性があります。   
+成功を確認する簡単な方法は、Responseオブジェクトに対してraise_for_status（）メソッドを呼び出すことです。   
+これは、ファイルのダウンロード中にエラーが発生した場合に例外を発生させ、ダウンロードが成功した場合は何も行いません。 対話型シェルに次のように入力します。
+
+```python
+>>> res = requests.get('http://inventwithpython.com/page_that_does_not_exist')
+>>> res.raise_for_status()
+Traceback (most recent call last):
+  File "<pyshell#138>", line 1, in <module>
+    res.raise_for_status()
+  File "C:\Python34\lib\site-packages\requests\models.py", line 773, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 404 Client Error: Not Found
+```
+
+raise_for_status（）メソッドは、悪いダウンロードが発生した場合にプログラムが停止するのを防ぐための良い方法です。   
+これは良いことです：予期せぬエラーが発生するとすぐにプログラムを停止させたい。   
+失敗したダウンロードがプログラムのディール・ブレーカー(合意を壊すもの？)でない場合、raise_for_status（）行をtryおよびexceptステートメントでラップして、クラッシュすることなくこのエラー・ケースを処理できます。
+
+```python
+import requests
+res = requests.get('http://inventwithpython.com/page_that_does_not_exist')
+try:
+    res.raise_for_status()
+except Exception as exc:  # exceptによって、エラーメッセージが出力される
+    print('There was a problem: %s' % (exc))
+
+# エラーメッセージ内容
+There was a problem: 404 Client Error: Not Found for url: http://inventwithpython.com/page_that_does_not_exist
+```
+
+requests.get（）を呼び出した後、常にraise_for_status（）を呼び出します。   
+プログラムが続行される前にダウンロードが実際に機能していることを確認する必要があります。
