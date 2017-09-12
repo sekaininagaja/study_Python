@@ -417,19 +417,19 @@ CSSセレクタ構文の詳細は、このマニュアルの範囲を超えて�
 以下に、最も一般的なCSSセレクタパターンの例を示します。  
 
 - soup.select('div')
-  - すべての <div> 要素
+  - すべての `<div>` 要素
 - soup.select('#author')
   - `id="author"` な要素
 - soup.select('.notice')
   - `class="notice"` な要素
 - soup.select('div span')
-  - <div> 要素内にある <span> 要素
+  - `<div>` 要素内にある `<span>` 要素
 - soup.select('div > span')
-  - <div> 直下にある <span> 要素で
+  - `<div>` 直下にある `<span>` 要素で
 - soup.select('input[name]')
-  - 任意の値を持つname属性を持つ <input> 要素
+  - 任意の値を持つname属性を持つ `<input>` 要素
 - soup.select('input[type="button"]')
-  - `type="button"` 属性を持つ <input> 要素
+  - `type="button"` 属性を持つ `<input>` 要素
 
 様々なセレクタパターンを組み合わせて洗練されたマッチを作ることができます。   
 たとえば、 `soup.select('p #author')` は、<p>内の、`id="author"` なすべての要素に一致します。  
