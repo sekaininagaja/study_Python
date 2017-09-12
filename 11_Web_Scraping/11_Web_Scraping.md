@@ -712,3 +712,218 @@ Beautiful Soupのその他の機能については、 http://www.crummy.com/soft
 リクエストとBeautifulSoupモジュールは、requests.get（）に渡す必要があるURLを把握できる限り、素晴らしいものです。   
 しかし、時々、これは見つけるのが簡単ではない。 あるいは、あなたのプログラムがナビゲートするウェブサイトには、まずログインする必要があります。   
 seleniumモジュールは、あなたのプログラムにそのような洗練されたタスクを実行する力を与えます。
+
+# seleniumモジュールでブラウザを制御する
+
+セレンモジュールを使うと、プログラマチックにリンクをクリックしてログイン情報を入力することで、Pythonがブラウザを直接制御できるようになります。  
+人間のユーザがページとやりとりしているかのようです。   
+Seleniumでは、Requests and Beautiful Soupよりはるかに高度な方法でWebページとやり取りできます。   
+しかし、Webブラウザを起動するので、Webからいくつかのファイルをダウンロードするだけで、バックグラウンドで実行するのが少し遅くて難しくなります。
+
+## selenium制御ブラウザの起動
+
+これらの例では、FirefoxのWebブラウザが必要です。   
+これはあなたがコントロールするブラウザになります。   
+まだFirefoxをお持ちでない場合は、http：//getfirefox.com/から無料でダウンロードできます。
+
+Selenium用のモジュールをインポートするのはややこしいことです。   
+`import selenium` の代わりに、`from selenium import webdriver` から実行する必要があります。   
+（セレンモジュールがこのように設定されている正確な理由は、この本の範囲を超えています）。  
+その後、SeleniumでFirefoxブラウザを起動できます。 対話型シェルに次のように入力します。
+
+```python
+>>> from selenium import webdriver
+>>> browser = webdriver.Firefox()
+>>> type(browser)
+<class 'selenium.webdriver.firefox.webdriver.WebDriver'>
+>>> browser.get('http://inventwithpython.com')
+```
+
+-> Firefox 55.0.3 だと、「geckodriverがない」というエラーになった。  
+```
+>>> browser = webdriver.Firefox()
+〜略〜
+selenium.common.exceptions.WebDriverException: Message: 'geckodriver' executable needs to be in PATH.
+>>>
+```
+https://github.com/mozilla/geckodriver/releases/tag/v0.18.0  からダウンロードしてきて `/usr/local/bin/` 以下に設置。うごくようになった。  
+- 参考: Selenium 3 をPythonで使う http://pc.atsuhiro-me.net/entry/2017/01/15/124308
+
+
+webdriver.Firefox() が呼び出されると、Firefox Webブラウザが起動します。   
+webdriver.Firefox() のtypeをみてみると、WebDriverのデータ型であることがわかります。   
+browser.get('http://inventwithpython.com') を呼び出すと、ブラウザは http://inventwithpython.com/ に移動します。
+
+## ページ上の要素の検索
+
+WebDriverオブジェクトには、ページ上の要素を見つけるためのかなりのメソッドがあります。   
+それらは、`find_element_*` メソッドと `find_elements_*` メソッドに分かれています。   
+find_element_*メソッドは、WebElementオブジェクトを1つ返します。  
+このオブジェクトは、クエリと一致するページの最初の要素を表します。   
+find_elements_*メソッドは、ページ上の一致するすべての要素のWebElement_*オブジェクトのリストを返します。
+
+下記に、変数ブラウザに格納されているWebDriverオブジェクトで呼び出されるfind_element_*メソッドとfind_elements_*メソッドのいくつかの例を示します。  
+
+- CSSクラス名を使用する要素
+  - browser.find_element_by_class_name(name)
+  - browser.find_elements_by_class_name(name)
+
+- CSSセレクタに一致する要素
+  - browser.find_element_by_css_selector(selector)
+  - browser.find_elements_by_css_selector(selector)
+
+- id属性値に一致する要素
+  - browser.find_element_by_id(id)
+  - browser.find_elements_by_id(id)
+
+- 提供されたテキストと完全に一致する`<a>`要素
+  - browser.find_element_by_link_text(text)
+  - browser.find_elements_by_link_text(text)
+
+- 提供されたテキストを含む`<a>`要素
+  - browser.find_element_by_partial_link_text(text)
+  - browser.find_elements_by_partial_link_text(text)
+
+- name属性値に一致する要素
+  - browser.find_element_by_name(name)
+  - browser.find_elements_by_name(name)
+
+- タグ名が一致する要素（大文字と小文字は区別されず、`<a>` も `<A>` もマッチ）
+  - browser.find_element_by_tag_name(name)
+  - browser.find_elements_by_tag_name(name)
+
+`*_by_tag_name()`メソッドを除いて、すべてのメソッドの引数は大文字と小文字を区別します。   
+メソッドが探しているものと一致する要素がページ上に存在しない場合、セレンモジュールは NoSuchElement 例外を発生させます。   
+この例外でプログラムをクラッシュさせたくない場合は、tryとexcept文をコードに追加してください。
+
+WebElementオブジェクトを取得したら、その属性を読んだり、下記のメソッドを呼び出すことで、WebElementオブジェクトについて詳しく知ることができます。  
+
+- tag_name
+  - `<a>`要素の 'a'などのタグ名
+- get_attribute(name)
+  - 要素のname属性の値
+- text
+  - `<span>hello</span>` の 'hello'のような要素内のテキスト
+- clear()
+  - テキストフィールドまたはテキストエリアの要素に対しては、入力されたテキストをクリアします
+- is_displayed()
+  - 要素が表示されている場合はTrueを返します。 それ以外の場合はFalseを返します。
+- is_enabled()
+  - 入力要素の場合、要素が有効な場合はTrueを返します。 それ以外の場合はFalseを返します。
+- is_selected()
+  - チェックボックスまたはラジオボタンの要素の場合、要素が選択されている場合はTrueを返します。それ以外の場はFalseを返します。
+- location
+  - ページ内の要素の位置を示すキー「x」と「y」を持つ辞書
+
+たとえばこんなプログラム。
+
+```python
+from selenium import webdriver
+browser = webdriver.Firefox()
+browser.get('http://inventwithpython.com')
+try:
+    elem = browser.find_element_by_class_name('bookcover')
+    print('Found <%s> element with that class name!' % (elem.tag_name))
+except:
+    print('Was not able to find an element with that name.')
+```
+
+ここではFirefoxを開いてURLに転送します。   
+このページでは、クラス名が 'bookcover' の要素を見つけようとします。  
+そのような要素が見つかった場合は、tag_name属性を使用してタグ名を出力します。   
+そのような要素が見つからなければ、別のメッセージを出力します。  
+
+クラス名が「ブックカバー」、タグ名が「img」の要素が見つかりましたので、このプログラムは以下を出力します。
+```
+Found <img> element with that class name!
+```
+
+## ページをクリックする
+
+find_element_*メソッドと find_elements_*メソッドから返されるWebElementオブジェクトには、その要素のマウスクリックをシミュレートするclick（）メソッドがあります。   
+このメソッドは、リンクをたどる、ラジオボタンを選択する、送信ボタンをクリックする、または要素がマウスでクリックされたときに発生する可能性のあるその他のものをトリガするために使用できます。   
+たとえば、対話型シェルに次のように入力します。
+
+```python
+>>> from selenium import webdriver
+>>> browser = webdriver.Firefox()
+>>> browser.get('http://inventwithpython.com')
+>>> linkElem = browser.find_element_by_link_text('Read It Online')
+>>> type(linkElem)
+<class 'selenium.webdriver.remote.webelement.WebElement'>
+>>> linkElem.click() # follows the "Read It Online" link
+```
+
+Firefoxがhttp://inventwithpython.com/ を開き、"Read It Online"のテキストを持つ`<a>`要素のWebElementオブジェクトを取得し、その`<a>`要素をクリックすることをシミュレートします。   
+あなたが自分でリンクをクリックした場合と同じです。 ブラウザはそのリンクに従います。
+
+## フォームの記入と送信
+
+Webページのテキストフィールドにキーストロークを送信するには、そのテキストフィールドの `<input>` または `<textarea>` 要素を見つけてからsend_keys()メソッドを呼び出します。   
+たとえば、対話型シェルに次のように入力します。
+
+```
+>>> from selenium import webdriver
+>>> browser = webdriver.Firefox()
+>>> browser.get('https://mail.yahoo.com')
+>>> emailElem = browser.find_element_by_id('login-username')
+>>> emailElem.send_keys('not_my_real_email')
+>>> passwordElem = browser.find_element_by_id('login-passwd')
+>>> passwordElem.send_keys('12345')
+>>> passwordElem.submit()
+```
+
+この本が公開されて以来、Gmailでユーザー名とパスワードのテキストフィールドのIDが変更されていない限り、前のコードではこれらのテキストフィールドに入力したテキストが入力されます。   
+（あなたはいつでもブラウザのインスペクタを使ってidを確認できます）。  
+要素のsubmit() メソッドを呼び出すと、要素が入っているフォームのSubmitボタンをクリックしたのと同じ結果になります（emailElem.submit()、そしてコードは同じことをしていました）。
+
+## 特殊キーの送信
+
+Seleniumには、エスケープ文字によく似た、文字列値には入力できないキーボードキー用のモジュールがあります。   
+これらの値は、selenium.webdriver.common.keysモジュールの属性に格納されます。   
+これは長いモジュール名なので、`from selenium.webdriver.common.keys import Keys` から実行する方がはるかに簡単です。  
+そうした場合、通常はselenium.webdriver.common.keysを書く必要がある場所であればどこでもKeysを書くことができます。
+
+以下に、よく使用されるKeys変数を示します。
+
+- Keys.DOWN, Keys.UP, Keys.LEFT, Keys.RIGHT
+  - キーボードの矢印キー
+- Keys.ENTER, Keys.RETURN
+  - ENTERキーとRETURNキー
+- Keys.HOME, Keys.END, Keys.PAGE_DOWN, Keys.PAGE_UP
+  - homeキー, endキー, pagedownキー, pageupキー
+- Keys.ESCAPE, Keys.BACK_SPACE, Keys.DELETE
+  - ESCキー, BACKSPACEキー, DELETEキー
+- Keys.F1, Keys.F2,..., Keys.F12
+  - F1 〜 F12 キー
+- Keys.TAB
+  - TABキー
+
+たとえば、カーソルが現在テキストフィールドにない場合、HOMEキーとENDキーを押すと、ブラウザがページの上部と下部にそれぞれスクロールします。   
+インタラクティブシェルに次のように入力し、send_keys（）がページをスクロールする方法に注意してください。
+
+```python
+>>> from selenium import webdriver
+>>> from selenium.webdriver.common.keys import Keys
+>>> browser = webdriver.Firefox()
+>>> browser.get('http://nostarch.com')
+>>> htmlElem = browser.find_element_by_tag_name('html')
+>>> htmlElem.send_keys(Keys.END)     # scrolls to bottom
+>>> htmlElem.send_keys(Keys.HOME)    # scrolls to top
+```
+
+`<html>`タグはHTMLファイルのベースタグです。
+.HTMLファイルの完全な内容は`<html>`タグと`</html>`タグで囲まれています。   
+browser.find_element_by_tag_name('html')を呼び出すと、一般的なWebページにキーを送信するのに適しています。   
+たとえば、ページの一番下までスクロールした後に新しいコンテンツが読み込まれた場合などに便利です。
+
+-> うごきませんなあ・・・？
+
+## ブラウザボタンをクリックする
+
+Seleniumは、さまざまなブラウザボタンのクリックを次の方法でシミュレートすることもできます。
+
+- browser.back() : 戻るボタンをクリック
+- browser.forward() : 進むボタンをクリック
+- browser.refresh() : 再読込ボタンをクリック
+- browser.quit() : windowを閉じるボタンをクリック
