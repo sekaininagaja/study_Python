@@ -660,3 +660,55 @@ urlが '＃'で終了するときにループを終了することがわかり�
 
 それ以外の場合、セレクタは1つの `<img>` 要素を含むリストを返します。   
 この `<img>` 要素からsrc属性を取得し、それをrequests.get()に渡して、漫画の画像ファイルをダウンロードすることができます。
+
+# ステップ4：画像を保存し、以前の漫画を見つける
+
+この時点で、コミックの画像ファイルはres変数に格納されます。   
+このイメージデータをハードドライブ上のファイルに書き込む必要があります。
+
+open（）に渡すローカルイメージファイルのファイル名が必要です。   
+comicUrlには、 'http://imgs.xkcd.com/comics/heartbleed_explanation.png' のような値があります。  
+ファイルパスのように見えるかもしれません。   
+実際、comicUrlでos.path.basename（）を呼び出すと、URLの最後の部分である 'heartbleed_explanation.png'が返されます。   
+イメージをハードドライブに保存するときにファイル名として使用できます。   
+この名前をos.path.join（）を使用してxkcdフォルダの名前に結合すると、プログラムでWindowsでは円記号（¥）、OS XおよびLinuxではスラッシュ（/）が使用されます。   
+最終的にファイル名を持つようになったので、open（）を呼び出して新しいファイルを 'wb' "バイナリ書き込み"モードで開くことができます。
+
+この章の前半から、リクエストを使用してダウンロードしたファイルを保存するには、iter_content（）メソッドの戻り値をループする必要があります。   
+forループのコードは、イメージデータのチャンク（それぞれ最大100,000バイト）をファイルに書き出し、ファイルを閉じます。   
+イメージがハードドライブに保存されるようになりました。
+
+その後セレクタ 'a[rel="prev"]' はrel属性がprevに設定された `<a>` 要素を識別し、この `<a>` 要素のhref属性を使用して以前のコミックのURLを取得できます。   
+その後、whileループはこのコミックのダウンロードプロセス全体を再び開始します。
+
+このプログラムを実行するとこんな感じになります。  
+
+```python
+Downloading page http://xkcd.com...
+Downloading image http://imgs.xkcd.com/comics/phone_alarm.png...
+Downloading page http://xkcd.com/1358/...
+Downloading image http://imgs.xkcd.com/comics/nro.png...
+Downloading page http://xkcd.com/1357/...
+Downloading image http://imgs.xkcd.com/comics/free_speech.png...
+Downloading page http://xkcd.com/1356/...
+Downloading image http://imgs.xkcd.com/comics/orbital_mechanics.png...
+Downloading page http://xkcd.com/1355/...
+Downloading image http://imgs.xkcd.com/comics/airplane_message.png...
+Downloading page http://xkcd.com/1354/...
+Downloading image http://imgs.xkcd.com/comics/heartbleed_explanation.png...
+--snip--
+```
+
+このプロジェクトは、Webから大量のデータを削るためにリンクを自動的にたどるプログラムの良い例です。   
+Beautiful Soupのその他の機能については、 http://www.crummy.com/software/BeautifulSoup/bs4/doc/ のドキュメントを参照してください。
+
+## 類似のアイデア
+ページをダウンロードしてリンクをたどることは、多くのWebクローリングプログラムの基礎となります。 同様のプログラムでは、次のことも可能です。
+
+- すべてのリンクをたどってサイト全体をバックアップします。
+- すべてのメッセージをWebフォーラムからコピーしてください。
+- オンラインストアで販売するアイテムのカタログを複製します。
+
+リクエストとBeautifulSoupモジュールは、requests.get（）に渡す必要があるURLを把握できる限り、素晴らしいものです。   
+しかし、時々、これは見つけるのが簡単ではない。 あるいは、あなたのプログラムがナビゲートするウェブサイトには、まずログインする必要があります。   
+seleniumモジュールは、あなたのプログラムにそのような洗練されたタスクを実行する力を与えます。
