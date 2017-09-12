@@ -195,3 +195,55 @@ There was a problem: 404 Client Error: Not Found for url: http://inventwithpytho
 
 requests.get（）を呼び出した後、常にraise_for_status（）を呼び出します。   
 プログラムが続行される前にダウンロードが実際に機能していることを確認する必要があります。
+
+# ダウンロードしたファイルをハードドライブに保存する
+
+ここから、標準のopen（）関数とwrite（）メソッドを使用して、Webページをハードドライブ上のファイルに保存できます。   
+しかし、若干の違いがあります。   
+まず、文字列 'wb'を2番目の引数としてopen（）に渡すことで、ファイルをバイナリ書き込みモードで開く必要があります。   
+ページが平文であっても（前にダウンロードしたロミオとジュリエットのテキストなど）、テキストのUnicodeエンコーディングを維持するために、テキストデータではなくバイナリデータを書き込む必要があります。
+
+### Unicodeエンコーディング
+Unicodeエンコーディングについては、この本の範囲を超えていますが、これらのWebページから詳細を知ることができます。  
+
+- Joel on Software: The Absolute Minimum Every Software Developer Absolutely, Positively Must Know About Unicode and Character Sets (No Excuses!): http://www.joelonsoftware.com/articles/Unicode.html
+- Pragmatic Unicode: http://nedbatchelder.com/text/unipain.html
+
+Webページをファイルに書き込むには、forループをResponseオブジェクトのiter_content（）メソッドとともに使用します。  
+
+```python
+>>> import requests
+>>> res = requests.get('https://automatetheboringstuff.com/files/rj.txt')
+>>> res.raise_for_status()
+>>> playFile = open('RomeoAndJuliet.txt', 'wb')
+>>> for chunk in res.iter_content(100000):
+        playFile.write(chunk)
+
+100000
+78981
+>>> playFile.close()
+```
+
+iter_content（）メソッドは、ループを介して各繰り返しでコンテンツの「チャンク」を返します。   
+各チャンクはバイトデータ型であり、各チャンクに含めるバイト数を指定できます。   
+一般的には100,000バイトが良いサイズなので、iter_content（）の引数として100000を渡します。
+
+ファイルRomeoAndJuliet.txtは現在の作業ディレクトリに存在します。   
+ウェブサイトのファイル名はrj.txtでしたが、ハードドライブ上のファイルのファイル名は異なります。   
+要求モジュールは、単にWebページのコンテンツのダウンロードを処理します。   
+ページがダウンロードされると、それは単にプログラム内のデータです。   
+ウェブページをダウンロードした後にインターネット接続を失ったとしても、すべてのページデータはあなたのコンピュータに残ります。
+
+write()メソッドは、ファイルに書き込まれたバイト数を返します。   
+前の例では、最初のチャンクに100,000バイトがあり、ファイルの残りの部分には78,981バイトしか必要ありませんでした。
+
+ファイルをダウンロードして保存するための完全なプロセスを次に示します。
+- ファイルをダウンロードするには `requests.get()` を呼び出します。
+- writeバイナリモードで新しいファイルを作成するには、`open()` を **'wb'** で呼び出します。
+- Responseオブジェクトの `iter_content()` メソッドをループします。
+- 各繰り返しで `write()` を呼び出して、コンテンツをファイルに書き込みます。
+- `close()` を呼び出してファイルを閉じます。
+
+リクエストモジュールにはこれだけです！   
+forループとiter_content() は、テキストファイルの書き込みに使用していた open() / write() / close() ワークフローと比べて複雑に思えるかもしれませんが、リクエストモジュールが大量のファイルをダウンロードした場合大量のメモリが必要になります。   
+リクエストモジュールのその他の機能については、http：//requests.readthedocs.org/から参照できます。
