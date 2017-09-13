@@ -907,7 +907,8 @@ Seleniumには、エスケープ文字によく似た、文字列値には入力
 >>> from selenium.webdriver.common.keys import Keys
 >>> browser = webdriver.Firefox()
 >>> browser.get('http://nostarch.com')
->>> htmlElem = browser.find_element_by_tag_name('html')
+>>> htmlElem = browser.find_element_by_tag_name('html') # これだと動かない
+>>> htmlElem = browser.find_element_by_tag_name('body') # これだと動く
 >>> htmlElem.send_keys(Keys.END)     # scrolls to bottom
 >>> htmlElem.send_keys(Keys.HOME)    # scrolls to top
 ```
@@ -917,7 +918,16 @@ Seleniumには、エスケープ文字によく似た、文字列値には入力
 browser.find_element_by_tag_name('html')を呼び出すと、一般的なWebページにキーを送信するのに適しています。   
 たとえば、ページの一番下までスクロールした後に新しいコンテンツが読み込まれた場合などに便利です。
 
--> うごきませんなあ・・・？
+-> うごきませんなあ・・・？  
+-> 指定するタグをbodyに変更したところ、うごいた。  
+```
+>>> htmlElem = browser.find_element_by_tag_name('html') # これだと動かない
+↓
+>>> htmlElem = browser.find_element_by_tag_name('body') # これだと動かない
+```
+- 参考: Selenium - Element is Not Visible [Python]  
+https://stackoverflow.com/questions/40256007/selenium-element-is-not-visible-python
+
 
 ## ブラウザボタンをクリックする
 
@@ -932,7 +942,7 @@ Seleniumは、さまざまなブラウザボタンのクリックを次の方法
 
 Seleniumは、ここで説明する機能をはるかに超えることができます。   
 ブラウザのCookieを変更したり、Webページのスクリーンショットを撮ったり、カスタムJavaScriptを実行したりすることができます。   
-これらの機能の詳細については、Seleniumのドキュメント（http://selenium-python.readthedocs.org/）を参照してください。
+これらの機能の詳細については、Seleniumのドキュメント（http://selenium-python.readthedocs.org/ ）を参照してください。
 
 # まとめ
 
@@ -962,21 +972,93 @@ Webブラウザはインターネットを介して情報を送受信する最�
 - ダウンロードしたコンテンツに文字列値としてアクセスするには `requests.get('http://hogehoge.com').text`
 
 3. What Requests method checks that the download worked?
+- Responseオブジェクトのstatus_code属性が`requests.codes.ok`である。
 
-```
 4. How can you get the HTTP status code of a Requests response?
+- `raise_for_status()`
+
 5. How do you save a Requests response to a file?
+- `requests.get('http://hogehoge.com/download.txt')` を呼び出す
+- writeバイナリモード(wb)で保存するファイルをひらく。`open('hoge.txt', 'wb')`
+- `iter_content()` メソッドを適当なサイズでループする。`for chunk in res.iter_content(100000):`
+- 各繰り返しでチャンクをガイルに書き込む。`write(chunk)`
+-  ファイルを閉じる。
+
 6. What is the keyboard shortcut for opening a browser’s developer tools?
+- Chrome(Windows) は [CTRL + Shift + I]
+- Chrome(Mac) は [Command + Opt + I]
+
 7. How can you view (in the developer tools) the HTML of a specific element on a web page?
+- [CTRL + Shift + C] で要素の選択ツールを持ち、調べたい要素をさわる
+
 8. What is the CSS selector string that would find the element with an id attribute of main?
+- browser.find_element_by_id('main')
+- browser.find_elements_by_id('main')
+
 9. What is the CSS selector string that would find the elements with a CSS class of highlight?
-10. What is the CSS selector string that would find all the <div> elements inside another <div> element?
-11. What is the CSS selector string that would find the <button> element with a value attribute set to favorite?
-12. Say you have a Beautiful Soup Tag object stored in the variable spam for the element <div>Hello world!</div>. How could you get a string 'Hello world!' from the Tag object?
+- browser.find_element_by_class_name('highlight')
+- browser.find_elements_by_class_name('highlight')
+
+10. What is the CSS selector string that would find all the `<div>` elements inside another `<div>` element?
+- ネストされた要素は xpath を指定して取得せよとのこと。
+- browser.find_element_by_xpath(".//div/div")
+- browser.find_elements_by_xpath(".//div/div")
+
+- メモ
+  - `.//`ではじめると相対パスになる。`/html/div/div/a...` と続けると絶対パスになる。
+  - idの書き方: `//div[@id='hoge']/div`
+  - classの書き方: `//div[@class='hoge']/div`
+
+- 参考
+- Selenium Pythonバインディング (4.3. XPathによる検索): https://selenium-python.a-zumi.net/locating-elements.html
+- Chromeのコンソール上でXPathのテストをする : http://dangerous-animal141.hatenablog.com/entry/2015/02/07/101251
+  - デベロッパーツールのコンソールで `$x("xpassを入力")` すると、該当するものがヒットする。
+- 便利なXPathまとめ: http://tech.vasily.jp/entry/xpath
+  - XPath の考え方がわかりやすくまとまっている
+  - chrome に「XPath Helper」なるアドオンをいれた。  
+    使い方 -> [Ctrl + Shift + X]で起動し、取得したい要素をシフトを押しながら選択
+
+11. What is the CSS selector string that would find the `<button>` element with a value attribute set to favorite?
+- browser.find_element_by_css_selector('button[value="favorite"]')
+
+- メモ
+  - chrome に 「CSS selecter helper」なるアドオンを入れた。  
+  使い方 -> 「CSS selecter helper」をクリックして起動すると左側に小窓が出てくる。そこに `button[value="favorite"]` など入れてみて、目的の要素が選択状態になるかテストする。
+
+12. Say you have a Beautiful Soup Tag object stored in the variable spam for the element `<div>Hello world!</div>`. How could you get a string 'Hello world!' from the Tag object?
+- spam[0].getText()
+
 13. How would you store all the attributes of a Beautiful Soup Tag object in a variable named linkElem?
-14. Running import selenium doesn’t work. How do you properly import the selenium module?
-15. What’s the difference between the find_element_* and find_elements_* methods?
-16. What methods do Selenium’s WebElement objects have for simulating mouse clicks and keyboard keys?
-17. You could call send_keys(Keys.ENTER) on the Submit button’s WebElement object, but what is an easier way to submit a form with Selenium?
-18. How can you simulate clicking a browser’s Forward, Back, and Refresh buttons with Selenium?
+
+- とりあえず飛ばす。どうやってすべてのタグを選択するのだろ・・・。
 ```
+# 未検証
+linkElem = exampleSoup.select('*')
+linkElem[i].attrs
+```
+
+14. Running import selenium doesn’t work. How do you properly import the selenium module?
+- from selenium import webdriver
+
+15. What’s the difference between the find_element_*  and find_elements_* methods?
+- find_element_* : クエリに一致する最初の要素1つだけにマッチ
+- find_elements_* : クエリに一致するすべての要素にマッチ
+
+16. What methods do Selenium’s WebElement objects have for simulating mouse clicks and keyboard keys?
+- マウスクリック : click() メソッド
+```
+>>> linkElem = browser.find_element_by_link_text('Read It Online')
+>>> linkElem.click()
+```
+- キーボード入力: send_keys() メソッド
+```
+>>> emailElem = browser.find_element_by_id('login-username')
+>>> emailElem.send_keys('not_my_real_email')
+```
+17. You could call send_keys(Keys.ENTER) on the Submit button’s WebElement object, but what is an easier way to submit a form with Selenium?
+- submit() メソッド
+
+18. How can you simulate clicking a browser’s Forward, Back, and Refresh buttons with Selenium?
+- browser.back()
+- browser.forward()
+- browser.refresh()
