@@ -218,3 +218,99 @@ openpyxl.cellモジュールからこれらの2つの関数をインポートし
 これらの機能を使用するためにワークブックを読み込む必要はありません。   
 必要に応じて、ワークブックをロードし、ワークシート・オブジェクトを取得し、max_columnのようなワークシート・オブジェクト・メソッドを呼び出して整数を取得できます。   
 次に、その整数をget_column_letter（）に渡すことができます。
+
+
+## シートから行と列を取得する
+
+ワークシートオブジェクトをスライスして、スプレッドシートの行、列、または長方形の領域にあるすべてのCellオブジェクトを取得できます。   
+その後、スライス内のすべてのセルをループすることができます。 対話型シェルに次のように入力します。
+
+```python   
+>>> import openpyxl
+   >>> wb = openpyxl.load_workbook('example.xlsx')
+   >>> sheet = wb.get_sheet_by_name('Sheet1')
+   >>> tuple(sheet['A1':'C3'])
+   ((<Cell Sheet1.A1>, <Cell Sheet1.B1>, <Cell Sheet1.C1>), (<Cell Sheet1.A2>,
+   <Cell Sheet1.B2>, <Cell Sheet1.C2>), (<Cell Sheet1.A3>, <Cell Sheet1.B3>,
+   <Cell Sheet1.C3>))
+>>> for rowOfCellObjects in sheet['A1':'C3']:
+        for cellObj in rowOfCellObjects:
+               print(cellObj.coordinate, cellObj.value)
+        print('--- END OF ROW ---')
+
+# 結果
+   A1 2015-04-05 13:34:02
+   B1 Apples
+   C1 73
+   --- END OF ROW ---
+   A2 2015-04-05 03:41:23
+   B2 Cherries
+   C2 85
+   --- END OF ROW ---
+   A3 2015-04-06 12:46:51
+   B3 Pears
+   C3 14
+   --- END OF ROW ---
+```
+
+ここでは、矩形領域のCellオブジェクトをA1からC3にし、その領域にCellオブジェクトを含むGeneratorオブジェクトを取得するように指定します。   
+このGeneratorオブジェクトを視覚化するために、tuple（）を使用してセルオブジェクトをタプルに表示することができます。   
+
+このタプルには、3つのタプルが含まれています。  
+各タプルは、目的の領域の上端から下端までの各行に1つです。   
+これらの3つの内側タプルのそれぞれは、最も左側のセルから右側に、希望の領域の1つの行にCellオブジェクトを含みます。   
+全体として、シートのスライスには、A1からC3までの領域のすべてのCellオブジェクトが含まれています。  
+左上のセルから始まり右下のセルで終わります。
+
+領域内の各セルの値を印刷するには、2つのforループを使用します。   
+外側のforループは、スライスの各行に移動します。   
+次に、各行に対して、入れ子のforループがその行の各セルを通過します。
+
+特定の行または列のセルの値にアクセスするには、ワークシートオブジェクトの行と列の属性を使用することもできます。   
+対話型シェルに次のように入力します。
+
+※下記を参考に修正  
+https://stackoverflow.com/questions/42603795/typeerror-generator-object-is-not-subscriptable
+
+```python
+>>> import openpyxl
+>>> wb = openpyxl.load_workbook('example.xlsx')
+>>> sheet = wb.active
+>>> list(sheet.columns[1])
+(<Cell Sheet1.B1>, <Cell Sheet1.B2>, <Cell Sheet1.B3>, <Cell Sheet1.B4>,
+<Cell Sheet1.B5>, <Cell Sheet1.B6>, <Cell Sheet1.B7>)
+>>> for cellObj in list(sheet.columns)[1]:
+        print(cellObj.value)
+
+# 結果
+Apples
+Cherries
+Pears
+Oranges
+Apples
+Bananas
+Strawberries
+```
+
+ワークシート・オブジェクトのrows属性を使用すると、タプルのタプルが得られます。   
+これらの内部タプルはそれぞれ行を表し、その行にCellオブジェクトを含みます。   
+また、columns属性はタプルのタプルを提供し、内側のタプルはそれぞれ、特定の列にCellオブジェクトを含みます。  
+Example.xlsxでは、7行と3列があるため、行は7つのタプル（それぞれ3つのCellオブジェクトを含む）のタプルを提供し、列は3つのタプル（それぞれ7つのCellオブジェクトを含む）のタプルを提供します。
+
+1つの特定のタプルにアクセスするには、より大きなタプルのインデックスで参照することができます。   
+たとえば、列Bを表すタプルを取得するには、sheet.columns [1]を使用します。   
+列AにCellオブジェクトを含むタプルを取得するには、sheet.columns [0]を使用します。   
+1つの行または列を表すタプルがあれば、そのCellオブジェクトをループして値を出力できます。
+
+## ワークブック、シート、セル
+
+クイックレビューとして、スプレッドシートファイルからセルを読み込む際に使用されるすべての関数、メソッド、およびデータ型の概要を次に示します。
+
+1. openpyxlモジュールをインポートします。
+1. openpyxl.load_workbook（）関数を呼び出します。
+1. ワークブックオブジェクトを取得します。
+1. アクティブなメンバー変数を読み取るか、get_sheet_by_name（）ワークブックメソッドを呼び出します。
+1. ワークシートオブジェクトを取得します。
+1. 行と列のキーワード引数を持つindexingまたはcell（）シートメソッドを使用します。
+1. Cellオブジェクトを取得します。
+1. Cellオブジェクトのvalue属性を読み取ります。
