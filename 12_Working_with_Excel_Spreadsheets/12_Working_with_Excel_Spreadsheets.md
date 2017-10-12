@@ -452,3 +452,106 @@ Excelスプレッドシートを解析するすべてのプログラムは、ス
 - 複数のExcelファイルを開き、スプレッドシート間のデータを比較します。
 - スプレッドシートに空白の行があるかどうか、またはセル内のデータが無効であるかどうかを確認し、そうであればユーザーに警告します。
 - スプレッドシートからデータを読み取り、それをPythonプログラムの入力として使用します。
+
+
+# Excel文書の作成
+
+OpenPyXLはまた、データを書き込む方法を提供します。  
+つまり、プログラムがスプレッドシートファイルを作成および編集できます。   
+Pythonでは、数千行のデータを含むスプレッドシートを簡単に作成できます。
+
+## Excel文書の作成と保存
+
+openpyxl.Workbook（）関数を呼び出して、新しい空のWorkbookオブジェクトを作成します。   
+対話型シェルに次のように入力します。
+
+```python
+>>> import openpyxl
+>>> wb = openpyxl.Workbook()
+>>> wb.get_sheet_names()
+['Sheet']
+>>> sheet = wb.active
+>>> sheet.title
+'Sheet'
+>>> sheet.title = 'Spam Bacon Eggs Sheet'
+>>> wb.get_sheet_names()
+['Spam Bacon Eggs Sheet']
+```
+
+ワークブックは、Sheetという名前の単一のシートから開始されます。    
+title属性に新しい文字列を格納することによって、シートの名前を変更することができます。
+
+Workbookオブジェクトまたはそのシートとセルを変更するたびに、save（）ワークブックメソッドを呼び出すまで、スプレッドシートファイルは保存されません。   
+インタラクティブシェルに次のように入力します（現在の作業ディレクトリのexample.xlsxを使用）。
+
+```python
+>>> import openpyxl
+>>> wb = openpyxl.load_workbook('example.xlsx')
+>>> sheet = wb.active
+>>> sheet.title = 'Spam Spam Spam'
+>>> wb.save('example_copy.xlsx')
+```
+
+ここでは、シートの名前を変更します。   
+変更を保存するために、ファイル名を文字列としてsave（）メソッドに渡します。   
+'example_copy.xlsx'のように元のファイルとは異なるファイル名を渡すと、その変更がスプレッドシートのコピーに保存されます。
+
+ファイルから読み込んだスプレッドシートを編集する場合は、編集した新しいスプレッドシートを元のファイルとは別のファイル名で保存する必要があります。   
+そうすれば、コードのバグにより、保存された新しいファイルに不正なデータや破損したデータが含まれている場合に備えて、元のスプレッドシートファイルを使用できます。
+
+## シートの作成と削除
+
+create_sheet（）メソッドとremove_sheet（）メソッドを使用して、ブックをブックに追加したりブックから削除したりすることができます。   
+対話型シェルに次のように入力します。
+
+```python
+>>> import openpyxl
+>>> wb = openpyxl.Workbook()
+>>> wb.get_sheet_names()
+['Sheet']
+>>> wb.create_sheet()
+<Worksheet "Sheet1">
+>>> wb.get_sheet_names()
+['Sheet', 'Sheet1']
+>>> wb.create_sheet(index=0, title='First Sheet')
+<Worksheet "First Sheet">
+>>> wb.get_sheet_names()
+['First Sheet', 'Sheet', 'Sheet1']
+>>> wb.create_sheet(index=2, title='Middle Sheet')
+<Worksheet "Middle Sheet">
+>>> wb.get_sheet_names()
+['First Sheet', 'Sheet', 'Middle Sheet', 'Sheet1']
+```
+
+create_sheet（）メソッドは、デフォルトでワークブックの最後のシートに設定されている `Sheet X` という名前の新しいワークシートオブジェクトを返します。   
+必要に応じて、新しいシートのインデックスと名前をindexキーワードとtitleキーワード引数で指定できます。
+
+次のように入力して前の例を続行します。
+
+```python
+>>> wb.get_sheet_names()
+['First Sheet', 'Sheet', 'Middle Sheet', 'Sheet1']
+>>> wb.remove_sheet(wb.get_sheet_by_name('Middle Sheet'))
+>>> wb.remove_sheet(wb.get_sheet_by_name('Sheet1'))
+>>> wb.get_sheet_names()
+['First Sheet', 'Sheet']
+```
+
+remove_sheet（）メソッドは、引数としてシート名の文字列ではなく、Worksheetオブジェクトを取ります。   
+削除したいシートの名前だけがわかっている場合は、get_sheet_by_name（）を呼び出し、その戻り値をremove_sheet（）に渡します。
+ワークブックにシートを追加したりシートを取り除いたりした後で、save（）メソッドを呼び出して変更を保存することを忘れないでください。
+
+## セルに値を書き込む
+
+セルに値を書き込むことは、辞書のキーに値を書き込むのと同じです。 これをインタラクティブシェルに入力します：
+
+```python
+>>> import openpyxl
+>>> wb = openpyxl.Workbook()
+>>> sheet = wb.get_sheet_by_name('Sheet')
+>>> sheet['A1'] = 'Hello world!'
+>>> sheet['A1'].value
+'Hello world!'
+```
+
+セルの座標が文字列である場合は、ワークシートオブジェクトの辞書キーのように使用して、書き込むセルを指定できます。
