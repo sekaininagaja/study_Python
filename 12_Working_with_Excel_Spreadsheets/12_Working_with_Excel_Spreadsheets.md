@@ -426,3 +426,17 @@ readCensusExcel.pyプログラムは間違ったコードでした：結果をce
 このデータを手で計算するには数時間かかりました。   
 このプログラムは数秒でそれをやりました。   
 OpenPyXLを使用すると、Excelスプレッドシートに保存された情報を抽出して計算を実行することができます。   http://nostarch.com/automatestuff/ から完全なプログラムをダウンロードできます。
+
+## 実行
+
+```
+censuspopdata.xlsx があるディレクトリに移動して、実行。
+
+> read_census_excel.py
+Opening workbook...
+Reading rows...
+Writing results...
+Done.
+
+→ census2010.py が生成される。
+```

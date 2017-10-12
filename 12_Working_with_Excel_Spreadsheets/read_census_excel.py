@@ -11,7 +11,7 @@ county_data = {}
 print('Reading rows...')
 for row in range(2, sheet.max_row + 1):
     # スプレッドシートの各行には、1つの国勢調査区域のデータがあります
-    stat   = sheet['B' + str(row)].value
+    state  = sheet['B' + str(row)].value
     county = sheet['C' + str(row)].value
     pop    = sheet['D' + str(row)].value
 
